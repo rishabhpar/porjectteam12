@@ -15,10 +15,31 @@ $("form[name='signup_form']").submit(function(e){
           window.location.href = "/dashboard/";
         },
         error: function(resp) {
-          console.log(resp);
-        //   This shit doesnt work in Brave browser, but does in Firefox/Chrome/Edge
-          $error.text(resp.responseJSON.error);
-          $error.removeClass("error--hidden");
+        //   This doesnt work in Brave browser, but does in Firefox/Chrome/Edge
+          $error.text(resp.responseJSON.error).removeClass("error--hidden");
+        }
+    });
+
+    e.preventDefault();
+});
+
+$("form[name='login_form']").submit(function(e){
+
+    var $form = $(this);
+    var $error = $form.find('.error');
+    var data = $form.serialize();
+
+    $.ajax({
+        url: "/user/login",
+        type: "POST",
+        data: data,
+        dataType: "json",
+        success: function(resp) {
+          window.location.href = "/dashboard/";
+        },
+        error: function(resp) {
+        //   This doesnt work in Brave browser, but does in Firefox/Chrome/Edge
+          $error.text(resp.responseJSON.error).removeClass("error--hidden");
         }
     });
 
