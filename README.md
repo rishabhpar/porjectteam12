@@ -45,18 +45,5 @@ Run the following commands
 Inside /frontend/ run the following command 'npm run build' to compile the code to a production build again.
 Activate virtual environment and go to base git directory.
 
-### For mac:
-'./run'
-
-If this gives an error saying *permission denied*
-
-'chmod u+x ./run'
-
-### For windows:
-
-<Insert equivalent commands>
-
-You will see the webpage if it runs successfully.
-
 ## To Test just the front end:
 You can test it just like a regular react app. Go into the frontend directory and run the command 'npm start' or 'yarn start'. This is good because you can see UI changes every time you save the code rather than running 'npm run build' each time. Save that for end-to-end testing.
