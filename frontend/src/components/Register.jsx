@@ -21,6 +21,7 @@ class Register extends Component {
                 email: document.getElementById("email").value,
                 name: document.getElementById("name").value,
                 password: document.getElementById("password").value,
+                confirm_password: document.getElementById("confirm_password").value
             })
             .then((res) => {
                 if (res.data.error) {
@@ -66,6 +67,9 @@ class Register extends Component {
 
                             <label for="password">Password</label>
                             <input type="password" id="password" class="field" required/>
+
+                            <label for="password">Reenter Password</label>
+                            <input type="password" id="confirm_password" class="field" required/>
 
                             {/* insert the alert initialized above */}
                             {alert}

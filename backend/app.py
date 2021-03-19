@@ -10,6 +10,8 @@ from flask_cors import CORS
 from mongoengine import *
 # import class from config.py
 from config import BaseConfig
+# import password_strength to ensure the user's password is strong
+from password_strength import PasswordPolicy
 
 # create a Flask app
 app = Flask(__name__)
@@ -25,6 +27,14 @@ class User(Document):
     name		= StringField(max_length=255, required=True)
     email		= StringField(max_length=255, unique=True)  # only one account for email
     password	= StringField(max_length=255, required=True)
+
+# create a password policy to ensure strong passwords from users
+policy = PasswordPolicy.from_names(
+    length=8,  # min length: 8
+    uppercase=1,  # need min. 1 uppercase letters
+    numbers=1,  # need min. 1 digits
+    special=1,  # need min. 1 special characters
+)
 
 # route to log in to the application
 # we can only POST to the API
@@ -56,13 +66,22 @@ def register():
         # pull form submission data.
         # encrypt sensitive information like email and password
         email = request.json["email"].lower()
-        password_encrypted = pbkdf2_sha256.encrypt(request.json["password"])
+        password = request.json["password"]
+        confirm_password = request.json["confirm_password"]
         name = request.json["name"]
+
+        # confirm the password the user chooses is strong
+        if len(policy.test(password)) > 0:
+            return jsonify({"error": "Password is not strong enough. Minimums: 8 characters, 1 uppercase, 1 number, 1 special"})
+
+        # make sure the user confirms the password properly
+        if password != confirm_password:
+            return jsonify({"error": "Passwords do not match"})
 
         # check to see if user already exists; else, communicate with user that an
         # account already exists
         try:
-            new_user = User(name=name, email=email, password=password_encrypted)
+            new_user = User(name=name, email=email, password=pbkdf2_sha256.hash(password))
             # if this is a new account, save to database
             new_user.save()
         except user_db.NotUniqueError:
