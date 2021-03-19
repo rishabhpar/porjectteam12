@@ -15,11 +15,8 @@ Run the following commands
     python3 -m pip install -r requirements.txt
 
 ### For Windows (Someone verify this the mac part works):
-    cd api
-    py -m venv env
-    .\env\Scripts\activate
-    cd ..
-    pip install -r requirements.txt
+    cd backend
+    python app.py (you may need to download some stuff)
 
 
 To update requirements.txt, enter the following commands in the activated virtual environment:
@@ -40,6 +37,8 @@ Run the following commands
     cd frontend
     npm install
     npm run build
+    (if needed)
+    npm start
 
 
 ## To Test if it works:
