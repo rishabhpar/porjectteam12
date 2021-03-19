@@ -1,5 +1,8 @@
 import React from "react";
 
+// This is a component that will communicate with users that 
+// there is an error with the processing of submitted data
+// Prop: The message to communicate to user
 function Alert(props) {
     return (
         <div

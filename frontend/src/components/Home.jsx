@@ -19,7 +19,8 @@ function Home() {
                         Built with React, Flask, and MongoDB (so far)</h5>
                 <br/>
                 <div>
-
+                    {/* Two buttons, one to sign in with and another to register 
+                        clicking a button will take you to another component */}
                     <a className='divStyle' href="/login">
                         <Button size="lg"  color="light">Sign In</Button>
                     </a>

@@ -1,5 +1,8 @@
 import React from "react";
 
+// This is a component that will communicate with users that 
+// there is a successful processing of submitted data
+// Prop: The message to communicate to user
 function PositiveAlert(props) {
     return (
         <div

@@ -7,7 +7,7 @@ class BaseConfig(object):
 		# 'PASSWORD': None,
 		'HOST': '127.0.0.1',
 		'PORT': 27017,
-		'DB': 'user_acct_info'
+		'DB': 'user_acct_info' # name of the database
 	}
 
 class ProductionConfig(object):

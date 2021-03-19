@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 function App() {
     return (
         <React.Fragment>
+            {/* route the components to a link that can be referenced with href */}
             <Router>
                 <Route path="/" exact component={Home} />
                 <Route path="/login" exact component={Login} />
