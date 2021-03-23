@@ -12,6 +12,8 @@ from mongoengine import *
 from config import BaseConfig
 # import password_strength to ensure the user's password is strong
 from password_strength import PasswordPolicy
+# use bcrypt to hash the email such that the same string hash the same hash
+import bcrypt
 
 # create a Flask app
 app = Flask(__name__)
@@ -36,6 +38,10 @@ policy = PasswordPolicy.from_names(
     special=1,  # need min. 1 special characters
 )
 
+# the seed for hashing a string using bcrypt
+# should probably hide this
+salt = b"$2a$12$w40nlebw3XyoZ5Cqke14M."
+
 # route to log in to the application
 # we can only POST to the API
 @app.route("/api/login", methods=["POST"])
@@ -43,10 +49,12 @@ def login():
     try:
         # extract information from the submission form
         email = request.json["email"]
+        email_hashed = (bcrypt.hashpw(str.encode(email), salt)).decode()
         password = request.json["password"]
 
-        # check for an existing user's email in the database
-        user = User.objects.get(email=email)
+        # check for an existing user's email in the database using the way
+        # the email is stored in the database
+        user = User.objects.get(email=email_hashed)
 
         # if a user exists and the password entered in the form
         # matches, this is a successful login; else, it is an error
@@ -66,6 +74,7 @@ def register():
         # pull form submission data.
         # encrypt sensitive information like email and password
         email = request.json["email"].lower()
+        email_hashed = bcrypt.hashpw(str.encode(email), salt).decode()
         password = request.json["password"]
         confirm_password = request.json["confirm_password"]
         name = request.json["name"]
@@ -81,7 +90,7 @@ def register():
         # check to see if user already exists; else, communicate with user that an
         # account already exists
         try:
-            new_user = User(name=name, email=email, password=pbkdf2_sha256.hash(password))
+            new_user = User(name=name, email=email_hashed, password=pbkdf2_sha256.hash(password))
             # if this is a new account, save to database
             new_user.save()
         except user_db.NotUniqueError:
