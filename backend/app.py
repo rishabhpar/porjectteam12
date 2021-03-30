@@ -40,7 +40,9 @@ policy = PasswordPolicy.from_names(
 
 # the seed for hashing a string using bcrypt
 # should probably hide this
-salt = b"$2a$12$w40nlebw3XyoZ5Cqke14M."
+f = open("extra/salt.txt", "r")
+salt = f.readline().encode()
+f.close()
 
 # route to log in to the application
 # we can only POST to the API

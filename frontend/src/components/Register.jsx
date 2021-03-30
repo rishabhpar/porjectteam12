@@ -34,9 +34,15 @@ class Register extends Component {
                     // and internally communicate that the registration succeeded
                     this.setState({ register: true });
                     this.setState({ err: "" });
+
+                    // this will reroute to the sign in page directly after 3 seconds
+                    setTimeout(() => {
+                        this.props.history.push("/login");
+                    }, 3000);
                 }
             });
     };
+
 
     render() {
         // variable to hold an Alert component that is updated based on the err state
@@ -48,7 +54,7 @@ class Register extends Component {
         // variable to hold an PositiveAlert component that is updated based on the register state
         let positiveAlert;
         if (this.state.register) {
-            positiveAlert = <PositiveAlert message={`You're registered!`}></PositiveAlert>;
+            positiveAlert = <PositiveAlert message={`You're registered! Taking you to sign in page...`}></PositiveAlert>;
         }
         return (
             <div className="main">

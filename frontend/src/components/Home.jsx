@@ -12,11 +12,12 @@ function Home() {
 
         <div className="container">
             <div className="main">
-                <h1 style={divStyle}> <strong>Landing Page</strong> - Project Team 12 </h1>
+                <h1 style={divStyle}> <strong>Welcome</strong> to Hardware Set Rental System 👋</h1>
                 <br/>
-                    <h5 style={divStyle}>Currently only has the login system <span role="img" aria-label="lock">🔒</span>
-                        <br></br>
-                        Built with React, Flask, and MongoDB (so far)</h5>
+                <h5 style={divStyle}>Safely borrow our hardware sets to leverage for your projects
+                    <br></br>
+                    Sign in or register 🔒 to visit/create a project
+                </h5>
                 <br/>
                 <div>
                     {/* Two buttons, one to sign in with and another to register 
@@ -30,6 +31,10 @@ function Home() {
                     </a>
 
                 </div>
+
+                <h5 style={divStyle}>
+                    Courtesy of Team 12 😊
+                </h5>
             </div>
         </div>
     );
