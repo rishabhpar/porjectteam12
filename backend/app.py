@@ -100,7 +100,7 @@ def register():
         return jsonify({"success": True})
     except:
         # there was an error while processing form submission
-        return jsonify({"error": "Invalid form"})
+        return jsonify({"error": "Invalid form"})       
     
 
 if __name__ == "__main__":

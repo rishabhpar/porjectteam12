@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import Alert from "./Alert";
 import PositiveAlert from "./PositiveAlert";
+import auth from "../auth";
 
 class Login extends Component {
     // state of the Login component
@@ -31,6 +32,16 @@ class Login extends Component {
                     // and internally communicate that the login succeeded
                     this.setState({ login: true });
                     this.setState({ err: "" });
+
+                    // login so the protected routes become viewable
+                    auth.login(() => {
+                        // once logged in reroute to the dashboard and pass email
+                        // to show you are logged in with a specific user.
+                        this.props.history.push({
+                            pathname: "/dashboard",
+                            state: {email: document.getElementById("email").value}
+                        });
+                    })
                 }
             });
     };

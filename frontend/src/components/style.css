@@ -188,3 +188,8 @@ input[type=submit] {
   margin: 34px auto 24px;
   display: block;
 }
+
+#logout{
+  display: flex;
+  justify-content: flex-end;
+}

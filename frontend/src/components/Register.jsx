@@ -54,7 +54,7 @@ class Register extends Component {
         // variable to hold an PositiveAlert component that is updated based on the register state
         let positiveAlert;
         if (this.state.register) {
-            positiveAlert = <PositiveAlert message={`You're registered! Taking you to sign in page...`}></PositiveAlert>;
+            positiveAlert = <PositiveAlert message={`You're registered! Taking you to the sign in page...`}></PositiveAlert>;
         }
         return (
             <div className="main">
