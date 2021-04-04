@@ -1,13 +1,10 @@
 from flask import Flask, request, jsonify
-# mongoengine is the package we will use to interact with MongoDB
-# mongoengine is a little more structured than pymongo 
-from flask_mongoengine import MongoEngine
+# package to interface with mongodb
+import pymongo
 # passlib is the package we will use to encrypt passwords
 from passlib.hash import pbkdf2_sha256
 # cors is used to relax security, only for development
 from flask_cors import CORS
-# vanilla mongoengine is used to format the schema of a users' acct info
-from mongoengine import *
 # import class from config.py
 from config import BaseConfig
 # import password_strength to ensure the user's password is strong
@@ -17,18 +14,13 @@ import bcrypt
 
 # create a Flask app
 app = Flask(__name__)
-app.config.from_object(BaseConfig)
 CORS(app)
 
-# create a database to host user information
-user_db = MongoEngine(app)
-
-# create a schema to organize what information we expect to have
-# when hosting user information in the database: Name, Email, Password
-class User(Document):
-    name		= StringField(max_length=255, required=True)
-    email		= StringField(max_length=255, unique=True)  # only one account for email
-    password	= StringField(max_length=255, required=True)
+# connect to cloud based mongodb
+client = pymongo.MongoClient("mongodb+srv://team12:adminBois&Gorls@cluster0.82uuk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+# get the specific database for user information
+User_DB = client.get_database('user_information')
+Account_Info = User_DB.users
 
 # create a password policy to ensure strong passwords from users
 policy = PasswordPolicy.from_names(
@@ -56,7 +48,7 @@ def login():
 
         # check for an existing user's email in the database using the way
         # the email is stored in the database
-        user = User.objects.get(email=email_hashed)
+        user = Account_Info.find_one({"email": email_hashed})
 
         # if a user exists and the password entered in the form
         # matches, this is a successful login; else, it is an error
@@ -64,11 +56,13 @@ def login():
         if user and pbkdf2_sha256.verify(password, user['password']):
             return jsonify({"success": True})
         else:
-            return jsonify({"error": "Incorrect Password"})
-    except DoesNotExist:
-        # if a user with entered email does not exist, send a feedback message
-        return jsonify({"error": "Entered email is not associated with a user"})
-    
+            if user is None:
+                # if a user with entered email does not exist, send a feedback message
+                return jsonify({"error": "Entered email is not associated with a user"})
+            return jsonify({"error": "Incorrect Password"})  
+    except:
+        return jsonify({"error": "Problem with Form"})
+
 
 @app.route("/api/register", methods=["POST"])
 def register():
@@ -88,15 +82,14 @@ def register():
         # make sure the user confirms the password properly
         if password != confirm_password:
             return jsonify({"error": "Passwords do not match"})
-
+        
         # check to see if user already exists; else, communicate with user that an
         # account already exists
-        try:
-            new_user = User(name=name, email=email_hashed, password=pbkdf2_sha256.hash(password))
-            # if this is a new account, save to database
-            new_user.save()
-        except user_db.NotUniqueError:
+        if Account_Info.find_one({"email": email_hashed}) is not None:
             return jsonify({"error": "User with that email already exists"})
+        else:
+            Account_Info.insert_one({"name":name, "email":email_hashed, "password":pbkdf2_sha256.hash(password)})
+            
         return jsonify({"success": True})
     except:
         # there was an error while processing form submission
