@@ -1,5 +1,6 @@
 // src/components/Home.jsx
 import React from "react";
+import { Table } from 'reactstrap';
 import './style.css';
 import auth from "../auth";
 import {Button} from "reactstrap";
@@ -13,19 +14,20 @@ class Dashboard extends React.Component {
         return (
 
             <div className="container">
-                <div className="main">
-                    <h1 style={divStyle}> <strong>Welcome</strong> {this.props.location.state.email} 👋</h1>
-                    <br/>
-                    <br/>
-                    <div>
-                        <Button size="lg"  color="light" onClick={() => {
-                            auth.logout(() => {
-                                this.props.history.push("/");
-                            })
-                        }}>Log Out</Button>     
+                 <div className="card-wrapper">
+                    <div class="card1">
+                        <h3>Welcome to your dashboard!</h3>
+                        <table striped bordered hover></table>
+                        <thead>
+                            <tr>
+                            <th>Project Name</th>
+                            <th>Description</th>
+                            <th>Date Created</th>
+                            </tr>
+                        </thead>
+                        <button class = "bigbtn" variant = "outline-primary">NEW PROJECT</button>
                     </div>
-    
-                </div>
+                </div>    
             </div>
         );
     };
