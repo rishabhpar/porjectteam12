@@ -22,6 +22,9 @@ client = pymongo.MongoClient("mongodb+srv://team12:adminBois&Gorls@cluster0.82uu
 User_DB = client.get_database('user_information')
 Account_Info = User_DB.users
 
+Project_DB = client.get_database('project_information')
+Project_Info = Project_DB.projects
+
 # create a password policy to ensure strong passwords from users
 policy = PasswordPolicy.from_names(
     length=8,  # min length: 8
@@ -89,6 +92,32 @@ def register():
             return jsonify({"error": "User with that email already exists"})
         else:
             Account_Info.insert_one({"name":name, "email":email_hashed, "password":pbkdf2_sha256.hash(password)})
+            
+        return jsonify({"success": True})
+    except:
+        # there was an error while processing form submission
+        return jsonify({"error": "Invalid form"})       
+    
+
+@app.route("/api/newproject", methods=["POST"])
+def newproject():
+    try:
+        # pull form submission data.
+        # encrypt sensitive information like project id
+        projectID = request.json["projectid"]
+        projectid_hashed = bcrypt.hashpw(str.encode(projectID), salt).decode()
+        projpassword = request.json["password"]
+        projectname = request.json["projName"]
+        desc = request.json["description"]
+        # confirm the password the user chooses is strong
+        if len(policy.test(projpassword)) > 0:
+            return jsonify({"error": "Password is not strong enough. Minimums: 8 characters, 1 uppercase, 1 number, 1 special"})
+        
+        # check to see if project already exists; else, communicate with user that this already exists
+        if Project_Info.find_one({"projectid": projectid_hashed}) is not None:
+            return jsonify({"error": "Project with that ID already exists"})
+        else:
+            Project_Info.insert_one({"projName":projectname, "projectid":projectID,"password":pbkdf2_sha256.hash(projpassword), "description":desc})
             
         return jsonify({"success": True})
     except:
