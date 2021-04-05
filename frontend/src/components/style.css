@@ -45,10 +45,19 @@ body {
   --red: #EF4836;
 }
 
-
 /* Typography */
 .center {
   text-align: center;
+}
+
+.right{
+  position: absolute;
+  right: 10px;
+}
+
+.left{
+  position: absolute;
+  left: 10px;
 }
 
 h1 {
@@ -87,6 +96,16 @@ p {
   background: var(--white);
 }
 
+.smallcard {
+  margin: 0 30px 60px;
+  padding: 20px 40px;
+  width: 200px;
+  box-shadow: 0 8px 26px -4px rgba(0,0,0,0.15);
+  border-radius: 5px;
+  background: var(--white);
+}
+
+
 @media only screen and (max-width: 520px) {
   .card-wrapper {
     padding: 30px 0 0;
@@ -98,6 +117,41 @@ p {
     width: 100%;
     border-radius: 0;
   }
+}
+
+.bar{
+  height: 40px;
+	width: 50%;
+  position: relative;
+  left: 10px;
+	display: flex;
+	border-radius: 4px;
+	overflow: hidden;
+  border: 2px solid white;
+  border-radius: 5px;
+}
+
+.bar section {
+	height: 40px;
+  position: relative;
+  left: 10px;
+	line-height: 35px;
+	text-align: center;
+	color: white;
+}
+.bar section:last-of-type {
+	flex: auto;
+}
+#occupied {
+  background: #eebc17;
+}
+
+#personal {
+  background: #05395c;
+}
+
+#available {
+  background: #42ac88;
 }
 
 /* Forms */
@@ -187,6 +241,12 @@ label {
 input[type=submit] {
   margin: 34px auto 24px;
   display: block;
+}
+
+.btn-add{
+  position: fixed;
+  bottom: 10px;
+  right: 30px;
 }
 
 #logout{
