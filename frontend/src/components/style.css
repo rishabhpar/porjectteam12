@@ -121,8 +121,55 @@ p {
   position: relative
 }
 
-tr:nth-child(even) {background-color: #f2f2f2;}
+.searchbar{
+  position: relative;
+  right:600px;
+  top:70px;
+  white-space:nowrap;
+}
+input[type=searchid] {
+  width: 150px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-image: url('searchicon.png');
+  background-size: 30px;
+  background-color: white;
+  background-position: 10px 10px; 
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+  transition: width 0.4s ease-in-out;
+  position: relative;
+  right:600px;
+  top: 100px;
+}
 
+input[type=searchid]:focus {
+  width: 500px;
+}
+#searchpass {
+  width: 150px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-image: url('password.png');
+  background-size: 25px;
+  background-color: white;
+  background-position: 10px 10px; 
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+  transition: width 0.4s ease-in-out;
+  position: relative;
+  right:600px;
+  top: 100px;
+}
+
+#searchpass:focus {
+  width: 500px;
+}
+tr:nth-child(even) {background-color: #f2f2f2;}
 th, td {
   border-spacing: 100px 100px;
  
@@ -252,7 +299,72 @@ label {
   background: var(--grey-medium);
   transition: color .15s ease, background-color .15s ease;
 }
+.btnSearch{
+  margin: 0 0 24px;
+  padding: 11px 30px 10px;
+  font-size: 14px;
+  line-height: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--white);
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  display: inline-block;
+  background: var(--grey-medium);
+  transition: color .15s ease, background-color .15s ease;
+  position: relative;
+  right:600px;
+  top:90px
+}
+.btnSearch:hover {
+  background: var(--primary-dark);
+}
 
+.btnSearch--secondary {
+  color: var(--almost-black);
+  background: var(--secondary);
+}
+
+.btnSearch--secondary:hover {
+  background: var(--secondary-dark);
+}
+.btnLogout{
+  margin: 0 0 24px;
+  padding: 11px 30px 10px;
+  font-size: 14px;
+  line-height: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--white);
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  display: inline-block;
+  background: var(--grey-medium);
+  transition: color .15s ease, background-color .15s ease;
+  position: relative;
+  left:450px;
+  bottom:730px;
+}
+.btnLogout:hover {
+  background: var(--primary-dark);
+}
+
+.btnLogout--secondary {
+  color: var(--almost-black);
+  background: var(--secondary);
+}
+
+.btnLogout--secondary:hover {
+  background: var(--secondary-dark);
+}
 .bigbtn{
   display: block;
   border: none;
@@ -264,6 +376,7 @@ label {
   background-color:rgba(0,0,0,0.2);
   text-align: center;
   position: relative; 
+  bottom:200px
   
 }
 

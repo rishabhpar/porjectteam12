@@ -4,6 +4,8 @@ import React, { Component } from "react";
 import axios from "axios";
 import Alert from "./Alert";
 import PositiveAlert from "./PositiveAlert";
+import auth from "../auth";
+
 
 class NewProject extends Component {
     // state of the Login component
@@ -41,7 +43,15 @@ class NewProject extends Component {
                     });
                 }
             });
+  
     };
+    nextPath() {
+        auth.login(() => {
+            this.props.history.push({
+                pathname: "/dashboard",
+            });
+        })
+        }
 
     render() {
         // variable to hold an Alert component that is updated based on the err state
@@ -79,14 +89,14 @@ class NewProject extends Component {
                         {alert}
 
                         <span>
-                            <input type="submit" value="Submit" class="btnSub"/>
+                            <input type="submit" value="Submit" class="btn"/>
                             {/* if the login is successful, communicate with user that it is done */}
                             {positiveAlert}
                         </span>
                     </form>
 
                     {/* go back to the landing page */}
-                    <h2 class="center">Cancel? <a href="/dashboard">Go Back</a></h2>
+                    <button onClick={() => this.nextPath()} class = "btnSub" variant = "outline-primary">Go Back</button>
                 </div>
             </div>
             </div>
