@@ -11,13 +11,14 @@ from config import BaseConfig
 from password_strength import PasswordPolicy
 # use bcrypt to hash the email such that the same string hash the same hash
 import bcrypt
-
+# Needed to verify the server is who it says it is. Mac won't work without and Cloud stuff might not either.
+import certifi
 # create a Flask app
 app = Flask(__name__)
 CORS(app)
 
 # connect to cloud based mongodb
-client = pymongo.MongoClient("mongodb+srv://team12:adminBois&Gorls@cluster0.82uuk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+client = pymongo.MongoClient("mongodb+srv://team12:adminBois&Gorls@cluster0.82uuk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", tlsCAFile=certifi.where())
 # get the specific database for user information
 User_DB = client.get_database('user_information')
 Account_Info = User_DB.users
