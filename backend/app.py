@@ -25,6 +25,9 @@ Account_Info = User_DB.users
 Project_DB = client.get_database('project_information')
 Project_Info = Project_DB.projects
 
+Hardware_DB = client.get_database('hardware_information')
+Hardware_Info = Hardware_DB.hardware
+
 # create a password policy to ensure strong passwords from users
 policy = PasswordPolicy.from_names(
     length=8,  # min length: 8
@@ -123,7 +126,8 @@ def newproject():
     except:
         # there was an error while processing form submission
         return jsonify({"error": "Invalid form"})       
-    
+
+
 
 if __name__ == "__main__":
     app.run(debug=True) # debug=True restarts the server everytime we make a change in our code
