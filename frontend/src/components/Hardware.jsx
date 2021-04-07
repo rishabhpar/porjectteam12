@@ -4,6 +4,7 @@ import {Button} from "reactstrap";
 import './style.css';
 import Alert from "./Alert";
 import axios from "axios";
+import { config } from './Constants'
 
 // MongoClient.connect(url, function(err, db) {
 //     if (err) throw err;
@@ -21,7 +22,7 @@ class Hardware extends Component {
     state = { a: [] }
     
       comonentDidMount() {
-        fetch(`http://127.0.0.1:5000/api/hardware`)
+        fetch(config.url.API_URL.concat(`/api/hardware`))
           //.then(this.props.searchid => this.setState({a: data.a}));
 
           .then(res => res.json())

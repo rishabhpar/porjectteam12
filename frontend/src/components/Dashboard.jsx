@@ -6,6 +6,7 @@ import Alert from "./Alert";
 import PositiveAlert from "./PositiveAlert";
 import { Button } from 'react';
 import auth from "../auth";
+import { config } from './Constants'
 
 var divStyle = {
     color:'white'
@@ -16,7 +17,7 @@ class Dashboard extends React.Component {
      dashboard = (e) => {
         e.preventDefault();
          axios
-             .post("https://hardwareresources12.herokuapp.com//api/dashboard", {
+             .post(config.url.API_URL.concat("/api/dashboard"), {
                  // get the form data on submission and post to the server
                  password: document.getElementById("searchpass").value,
                  searchid: document.getElementById("searchid").value

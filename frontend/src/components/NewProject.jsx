@@ -5,7 +5,7 @@ import axios from "axios";
 import Alert from "./Alert";
 import PositiveAlert from "./PositiveAlert";
 import auth from "../auth";
-
+import { config } from './Constants'
 
 class NewProject extends Component {
     // state of the NewProject component
@@ -17,7 +17,7 @@ class NewProject extends Component {
     newproject = (e) => {
        e.preventDefault();
         axios
-            .post("https://hardwareresources12.herokuapp.com/api/newproject", {
+            .post(config.url.API_URL.concat("/api/newproject"), {
                 // get the form data on submission and post to the server
                 projName: document.getElementById("projName").value,
                 description: document.getElementById("description").value,
