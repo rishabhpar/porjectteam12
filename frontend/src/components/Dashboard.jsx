@@ -6,15 +6,14 @@ import Alert from "./Alert";
 import PositiveAlert from "./PositiveAlert";
 import { Button } from 'react';
 import auth from "../auth";
-import { BiSearchAlt } from "react-icons/bi";
 
 var divStyle = {
     color:'white'
 };
 
 class Dashboard extends React.Component {
-    state = { err: "" };
-    dashboard = (e) => {
+    state = { err: "" , arr: [], searcher:''};
+     dashboard = (e) => {
         e.preventDefault();
          axios
              .post("http://127.0.0.1:5000/api/dashboard", {
@@ -30,46 +29,69 @@ class Dashboard extends React.Component {
                      this.setState({ dashboard: false });
                  } else {
                      // else, clear err message
-                     // and internally communicate that the login succeeded
+                     // and internally communicate that the project was found
                      this.setState({dashboard: true });
                      this.setState({ err: "" });
-                     // once logged in reroute to the dashboard and pass email
-                     // to show you are logged in with a specific user.
-                     this.props.history.push({
-                         pathname: "/dashboard",
-                         // state: {email: document.getElementById("email").value}
-                     });
+                     this.setState({searcher:document.getElementById('searchid').value})
+                     // once the project is found reroute to the hardware page
+                     setTimeout(() => {
+                        this.props.history.push({
+                            pathname: "/hardware",
+                            state: {searchid: document.getElementById("searchid").value},
+                        })
+                    }, 3000);
+                
                  }
-             });
+             });};
+
+    //potential method to display data from datbase
+     displayProject = (arr) =>{
+        return arr.map((na, index) => (
+            <div key={index}>
+                <h3>{arr.name}</h3>
+            </div>
+        ));
      };
+
+    //method to push external paths
     nextPath(path) {
         this.props.history.push(path);
-      }
+      };
 
     render () {
 
+        
         let alert;
         if (this.state.err !== "") {
           alert = <Alert message={`Check your form and try again! (${this.state.err})`}></Alert>;
         } 
 
-        // variable to hold an PositiveAlert component that is updated based on the login state
+        // variable to hold an PositiveAlert component that is updated based on the project state
         let positiveAlert;
         if (this.state.dashboard) {
-            positiveAlert = <PositiveAlert message={`Found`}></PositiveAlert>;
+            positiveAlert = <PositiveAlert message={`Success! Taking you to hardware checkout for the project`}></PositiveAlert>;
         }
         return (
             <div className="container">
                  <div className="card-wrapper">
                     <div class="card1">
-                        <h3><strong>Welcome</strong> to your dashboard{/*{this.props.location.state.name}*/}</h3>
+                        <h3><strong>Welcome</strong> to your dashboard! {/*<strong>{this.props.location.state.email}!</strong>*/}</h3>
                         <form name="searchform" onSubmit={this.dashboard}>                       
                         <label className= "searchbar" for="searchid"><strong>Project ID</strong> </label>
                      
                         <input type="searchid" placeholder="Project ID" id="searchid"  class="field" required/>
                         <input type="password" placeholder="Password" id="searchpass"  class="field" required/>
-                        <input type="submit" value="Submit" class="btnSearch"/>
+
+                        {/* insert the alert initialized above */}
+                        {alert}
+                        <div class = "move">
+                        <input type="submit" value="Submit" class="btn"/>
+                        {/* if project was found, display ID and let them know it was found */}
+                        <p style={{whiteSpace: "nowrap"}} ><strong>PROJECT ID: {this.state.searcher}</strong></p>
+                         {positiveAlert}
+                         </div>
                         </form>
+                        {/* Routes to new project or back home after logging out */}
                         <button onClick={() => this.nextPath('/newproject')} class = "bigbtn" variant = "outline-primary">NEW PROJECT</button>
                         <button onClick={() => this.nextPath('/')} class = "btnLogout" variant = "outline-primary">Logout</button>
                     </div> 

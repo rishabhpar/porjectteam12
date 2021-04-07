@@ -105,16 +105,15 @@ def newproject():
         # pull form submission data.
         # encrypt sensitive information like project id
         projectID = request.json["projectid"]
-        projectid_hashed = bcrypt.hashpw(str.encode(projectID), salt).decode()
         projpassword = request.json["password"]
         projectname = request.json["projName"]
         desc = request.json["description"]
         # confirm the password the user chooses is strong
-        if len(policy.test(projpassword)) > 0:
-            return jsonify({"error": "Password is not strong enough. Minimums: 8 characters, 1 uppercase, 1 number, 1 special"})
+        #if len(policy.test(projpassword)) > 0:
+         #   return jsonify({"error": "Password is not strong enough. Minimums: 8 characters, 1 uppercase, 1 number, 1 special"})
         
         # check to see if project already exists; else, communicate with user that this already exists
-        if Project_Info.find_one({"projectid": projectid_hashed}) is not None:
+        if Project_Info.find_one({"projectid": projectID}) is not None:
             return jsonify({"error": "Project with that ID already exists"})
         else:
             Project_Info.insert_one({"projName":projectname, "projectid":projectID,"password":pbkdf2_sha256.hash(projpassword), "description":desc})
@@ -124,6 +123,24 @@ def newproject():
         # there was an error while processing form submission
         return jsonify({"error": "Invalid form"})       
     
-
+@app.route("/api/dashboard", methods=["POST"])
+def dashboard():
+    try:
+    
+        # pull form submission data.
+        # encrypt sensitive information like project id
+        searchid = request.json["searchid"]
+        projpassword = request.json["password"]
+        
+        # check to see if project already exists; else, communicate with user that this already exists
+        if Project_Info.find_one({"projectid": searchid}) is None:
+            return jsonify({"error": "Project with that ID does not exist"})
+        
+            
+        return jsonify({"success": True})
+    except:
+        # there was an error while processing form submission
+        return jsonify({"error": "Invalid form"})
+     
 if __name__ == "__main__":
     app.run(debug=True) # debug=True restarts the server everytime we make a change in our code
