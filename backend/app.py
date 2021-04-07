@@ -123,7 +123,6 @@ def newproject():
     except:
         # there was an error while processing form submission
         return jsonify({"error": "Invalid form"})       
-<<<<<<< HEAD
     
 @app.route("/api/dashboard", methods=["POST"])
 def dashboard():
@@ -144,13 +143,11 @@ def dashboard():
         # there was an error while processing form submission
         return jsonify({"error": "Invalid form"})
      
-=======
 
 @app.route("/api/hardware", methods=["GET"])
 def hardware():
     return Hardware_Info
 
 
->>>>>>> a30cbc198e767697926f3b14d83fcfaccb589d77
 if __name__ == "__main__":
     app.run(debug=True) # debug=True restarts the server everytime we make a change in our code

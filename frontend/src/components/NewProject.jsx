@@ -17,7 +17,7 @@ class NewProject extends Component {
     newproject = (e) => {
        e.preventDefault();
         axios
-            .post("http://127.0.0.1:5000/api/newproject", {
+            .post("https://hardwareresources12.herokuapp.com/api/newproject", {
                 // get the form data on submission and post to the server
                 projName: document.getElementById("projName").value,
                 description: document.getElementById("description").value,

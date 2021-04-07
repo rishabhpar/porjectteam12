@@ -16,7 +16,7 @@ class Login extends Component {
     login = (e) => {
         e.preventDefault();
         axios
-            .post("http://127.0.0.1:5000/api/login", {
+            .post("https://hardwareresources12.herokuapp.com/api/login", {
                 // get the form data on submission and post to the server
                 email: document.getElementById("email").value,
                 password: document.getElementById("password").value,
