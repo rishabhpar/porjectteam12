@@ -11,13 +11,14 @@ from config import BaseConfig
 from password_strength import PasswordPolicy
 # use bcrypt to hash the email such that the same string hash the same hash
 import bcrypt
-
+# Needed to verify the server is who it says it is. Mac won't work without and Cloud stuff might not either.
+import certifi
 # create a Flask app
 app = Flask(__name__)
 CORS(app)
 
 # connect to cloud based mongodb
-client = pymongo.MongoClient("mongodb+srv://team12:adminBois&Gorls@cluster0.82uuk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+client = pymongo.MongoClient("mongodb+srv://team12:adminBois&Gorls@cluster0.82uuk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", tlsCAFile=certifi.where())
 # get the specific database for user information
 User_DB = client.get_database('user_information')
 Account_Info = User_DB.users
@@ -122,6 +123,7 @@ def newproject():
     except:
         # there was an error while processing form submission
         return jsonify({"error": "Invalid form"})       
+<<<<<<< HEAD
     
 @app.route("/api/dashboard", methods=["POST"])
 def dashboard():
@@ -142,5 +144,13 @@ def dashboard():
         # there was an error while processing form submission
         return jsonify({"error": "Invalid form"})
      
+=======
+
+@app.route("/api/hardware", methods=["GET"])
+def hardware():
+    return Hardware_Info
+
+
+>>>>>>> a30cbc198e767697926f3b14d83fcfaccb589d77
 if __name__ == "__main__":
     app.run(debug=True) # debug=True restarts the server everytime we make a change in our code
