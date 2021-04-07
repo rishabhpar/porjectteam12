@@ -14,6 +14,7 @@ import bcrypt
 # Needed to verify the server is who it says it is. Mac won't work without and Cloud stuff might not either.
 import certifi
 # create a Flask app
+import sys
 app = Flask(__name__)
 CORS(app)
 
@@ -148,6 +149,30 @@ def dashboard():
 def hardware():
     return Hardware_Info
 
+
+# API to delete a project
+@app.route("/api/deleteproject", methods=["POST"])
+def deleteproject():
+    try:
+        #Get the projectID from the request (the form might only ask for password)
+        #encrypt the projectid to match encryptions in db
+        projectID = request.json["projectid"]
+        projpassword = request.json["password"]
+
+        #Get the project
+        project = Project_Info.find_one({"projectid": projectID})
+
+        if project and pbkdf2_sha256.verify(projpassword, project['password']):
+            Project_Info.delete_one({"projectid": projectID})
+            return jsonify({"success": True})
+        else:
+            if project is None:
+                # if a project with projectID does not exist, send a feedback message
+                return jsonify({"error": "Project does not Exist"})
+            return jsonify({"error": "Incorrect Password"})  
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return jsonify({"error": "Problem with Form"})
 
 if __name__ == "__main__":
     app.run(debug=True) # debug=True restarts the server everytime we make a change in our code
