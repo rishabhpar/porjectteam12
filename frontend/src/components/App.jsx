@@ -22,9 +22,9 @@ function App() {
                     <Route path="/register" exact component={Register} />
                     <Route path="/hardware" exact component={Hardware}/>
                     <Route path="/newproject" exact component={NewProject}/>
-                    <Route path="/dashboard" exact component={Dashboard} />
+                    {/*<Route path="/dashboard" exact component={Dashboard} />*/}
                     {/* the dashboard should not be viewable if user is not logged in */}
-                   {/* <ProtectedRoute path="/dashboard" exact component={Dashboard} />*/}
+                    <ProtectedRoute path="/dashboard" exact component={Dashboard} />
                     
                 </Switch> 
             </Router>

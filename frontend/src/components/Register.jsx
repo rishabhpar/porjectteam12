@@ -5,6 +5,7 @@ import axios from "axios";
 import Alert from "./Alert";
 import "./style.css";
 import PositiveAlert from "./PositiveAlert";
+import { config } from './Constants'
 
 class Register extends Component {
     // state of the Register component
@@ -16,7 +17,7 @@ class Register extends Component {
     register = (e) => {
         e.preventDefault();
         axios
-            .post("http://127.0.0.1:5000/api/register", {
+            .post(config.url.API_URL.concat("/api/register"), {
                 // get the form data on submission and post to the server
                 email: document.getElementById("email").value,
                 name: document.getElementById("name").value,

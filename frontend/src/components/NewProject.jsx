@@ -5,19 +5,19 @@ import axios from "axios";
 import Alert from "./Alert";
 import PositiveAlert from "./PositiveAlert";
 import auth from "../auth";
-
+import { config } from './Constants'
 
 class NewProject extends Component {
-    // state of the Login component
+    // state of the NewProject component
     // err is the error message flask server returned
     state = { err: "" };
 
-    // login is an onSubmit function that will post 
+    // newproject is an onSubmit function that will post 
     // form submission data to the server
     newproject = (e) => {
        e.preventDefault();
         axios
-            .post("http://127.0.0.1:5000/api/newproject", {
+            .post(config.url.API_URL.concat("/api/newproject"), {
                 // get the form data on submission and post to the server
                 projName: document.getElementById("projName").value,
                 description: document.getElementById("description").value,
@@ -27,24 +27,24 @@ class NewProject extends Component {
             .then((res) => {
                 if (res.data.error) {
                     // if there is an error, update err with message
-                    // and internally communicate that the login failed
+                    // and internally communicate that the project creation failed
                     this.setState({ err: res.data.error });
                     this.setState({ newproject: false });
                 } else {
                     // else, clear err message
-                    // and internally communicate that the login succeeded
+                    // and internally communicate that the project creation succeeded
                     this.setState({newproject: true });
                     this.setState({ err: "" });
                     // once logged in reroute to the dashboard and pass email
                     // to show you are logged in with a specific user.
                     this.props.history.push({
-                        pathname: "/dashboard",
-                        // state: {email: document.getElementById("email").value}
+                        pathname: "/dashboard"
                     });
                 }
             });
   
     };
+    //finds next authorized path
     nextPath() {
         auth.login(() => {
             this.props.history.push({
@@ -90,7 +90,7 @@ class NewProject extends Component {
 
                         <span>
                             <input type="submit" value="Submit" class="btn"/>
-                            {/* if the login is successful, communicate with user that it is done */}
+                            {/* if the project creation is successful, communicate with user that it is done */}
                             {positiveAlert}
                         </span>
                     </form>
