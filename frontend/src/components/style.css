@@ -373,9 +373,14 @@ input[type=submit] {
 }
 
 .btn-add{
-  position: fixed;
+  position: absolute;
   bottom: 10px;
-  right: 30px;
+  left: 50%;
+}
+.btn--back{
+  position: absolute;
+  bottom: 10px;
+  right: 50%
 }
 
 #logout{

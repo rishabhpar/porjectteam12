@@ -5,56 +5,105 @@ import './style.css';
 import Alert from "./Alert";
 import axios from "axios";
 import auth from "../auth";
+import { config } from './Constants';
 
 
 class Hardware extends Component{
 
-    state = {
-        hw: []
+    constructor(props) {
+        super(props);
+        console.log("IN CONSTRUCTOR")
+        this.initializeSearchid()
+        console.log(this.props)
+        if(this.state == undefined || this.state.searchid == undefined) {
+            this.state = {
+                used1: '234',
+                used2:'123',
+                cap1: '345',
+                cap2:'456',
+                hw: {},
+                searchid: this.searchid
+            }
+        } else {
+            this.state = {
+                used1: '234',
+                used2:'123',
+                cap1: '345',
+                cap2:'456',
+                hw: {}
+            }
+        }
+        
+        
+
+        this.handleHardwarePostRequest = this.handleHardwarePostRequest.bind(this);
     }
     setNum = 1
     url = 'http://127.0.0.1:5000/api/hardware?setNum=' + this.setNum
 
-    componentDidMount(){
-        //this.getHardware(1)
-        axios.post(this.url, {
-                setNum: '1',
-                capacity: '2',
-                totalUsed: '2',
+    initializeSearchid() {
+        console.log(this.searchid)
+        if(this.props.history.action == "PUSH"){
+            this.searchid = this.props.location.state.searchid
+        };
+        
+    }
+    componentDidMount() {
+        console.log("COMPONENT DID MOUNT")
+        // this.hardwarePostRequest(0, 0, 0)
+        axios.post(config.url.API_URL.concat("/api/hardware"), {
+            // get the form data on submission and post to the server
+            set1: 0,
+            set2: 0,
+            check: 0,
+            id: this.state.searchid
         })
             .then(response => {
                 const hw = response.data;
-                this.setState({ hw });  
-              
-            })
-            .catch(() => {
-                alert('error data not received')
-            });
-    };
-
-    getHardware = (setNum) => {
-        axios.post('http://127.0.0.1:5000/api/hardware?', { params: { setNum: this.setNum}})
-            .then(response => {
-                const hw = response.data;
-                this.setState({ hw });  
-             //   this.setState({ a: response.data });
-               // console.log(this.state.a) 
-                                 
+                this.setState({ hw }); 
+                console.log(hw)
+              //  console.log(JSON.stringify(this.id))
+             //   console.log(JSON.stringify(response.data)) 
+                       
             })
             .catch(() => {
                 alert('error data not received')
             });
     }
 
-    // display = (a) => {
-    //     return a.map((hw) => 
-    //     <div>
-    //         <h3>{hw.capacity}</h3>
-    //     </div>)
-    // }
+    handleHardwarePostRequest(set1, set2, check) {
+        axios.post(config.url.API_URL.concat("/api/hardware"), {
+            // get the form data on submission and post to the server
+            set1: set1,
+            set2: set2,
+            check: check,
+            id: this.state.searchid
+        })
+            .then(response => {
+                const hw = response.data;
+                this.setState({ hw }); 
+                
+              //  console.log(JSON.stringify(this.id))
+             //   console.log(JSON.stringify(response.data)) 
+                       
+            })
+            .catch(() => {
+                alert('error data not received')
+            });
+    }
 
+    hardwarePostRequest = () => {
+        this.hardwarePostRequest(
+            document.getElementById("set1").value,
+            document.getElementById("set2").value,
+            document.getElementById("check").value
+        );
+    };
 
+    searchid = '0';
     render(){
+        console.log("RENDER")
+        
         var divStyle = {
             color:'white'
         };
@@ -83,43 +132,28 @@ class Hardware extends Component{
 //     <Button  size="sm" id="set2" color="light">Set 2</Button>
 // </a>
 
-        let set1;
-        this.setNum = 1
-        
-        let set2;
-        this.setNum = 2
 
         return (
             <div className="container">
                 <h1 class="center" style={divStyle}> <strong>Resource Management</strong></h1>
                 <br></br><br></br>
-                  <h1>{this.state.hw.setNum}</h1>
-                    <div class = "right">
-                        
-                        {/* create the form and set the onSubmit task to be check in and out */}
 
-                        <form name="request1" >
-                            <h4 style = {divStyle} >Request: </h4>
-                            <input type="text" id="request" class="field" />
-                        </form>
-                        {/*FIX BUTTON LINKS*/}
-                        <a className='divStyle' href="/login">
-                            <Button size="sm" id="in" color="light">Check In</Button>
-                        </a>
-                        <a className='divStyle' href="/register">
-                            <Button  size="sm" id="out" color="light">Check Out</Button>
-                        </a>
-                    </div>
+                  <h1 style={divStyle}>For project ID: {this.state.searchid}</h1>
+                    
+                    <h1>Set 1 checked out: {this.state.hw.used1}     Set 1 capacity left: {this.state.hw.cap1}</h1>
+                    <h1></h1>
+                    <h1>Set 2 checked out: {this.state.hw.used2}     Set 2 capacity left: {this.state.hw.cap2}</h1>
+                    <h1></h1>
                     <div class="right">
-                    <form name="signup_form" onSubmit={this.componentDidMount}>
+                    <form name="signup_form" onSubmit={this.hardwarePostRequest}>
 
-                            <label for="set">Set</label>
-                            <input type="set" id="set" class="field" required/>
+                            <label for="set1" style={divStyle}>Set 1: </label>
+                            <input type="set1" id="set1" class="field" required/>
 
-                            <label for="val">Request</label>
-                            <input type="val" id="val" class="field" required/>
+                            <label for="set2" style={divStyle}>Set 2: </label>
+                            <input type="set2" id="set2" class="field" required/>
 
-                            <label for="check">Checkin/out</label>
+                            <label for="check" style={divStyle}>Check In or Out</label>
                             <input type="check" id="check" class="field" required/>                            
 
                             <span>
@@ -128,12 +162,7 @@ class Hardware extends Component{
                             </span>
                         </form>
 
-                        </div>
-
-                        <h1>{this.state.hw.setNum}</h1>
-                        <h1>{this.state.hw.capacity}</h1>
-                        <h1>{this.state.hw.totalUsed}</h1>
-                        
+                        </div>                        
                     
                     <h1 style = {divStyle}>Hardware Set 1</h1>
                     <div class="bar">
@@ -152,6 +181,9 @@ class Hardware extends Component{
                     {/*LINK TO PHYSIONET PAGE*/}
                     <a className='divStyle' class = "btn-add" href="/dashboard">
                         <Button size="lg"  color="dark">ADD DATASET</Button>
+                    </a>
+                    <a className='divStyle' class = "btn-back" href="/dashboard">
+                        <Button size="lg"  color="dark">Back</Button>
                     </a>
                 
 

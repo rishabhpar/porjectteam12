@@ -113,6 +113,8 @@ def newproject():
         projpassword = request.json["password"]
         projectname = request.json["projName"]
         desc = request.json["description"]
+        cap = 100
+        used = 0
         # confirm the password the user chooses is strong
         #if len(policy.test(projpassword)) > 0:
          #   return jsonify({"error": "Password is not strong enough. Minimums: 8 characters, 1 uppercase, 1 number, 1 special"})
@@ -121,7 +123,7 @@ def newproject():
         if Project_Info.find_one({"projectid": projectID}) is not None:
             return jsonify({"error": "Project with that ID already exists"})
         else:
-            Project_Info.insert_one({"projName":projectname, "projectid":projectID,"password":pbkdf2_sha256.hash(projpassword), "description":desc})
+            Project_Info.insert_one({"projName":projectname, "projectid":projectID,"password":pbkdf2_sha256.hash(projpassword), "description":desc, "cap1": cap, "cap2": cap, "used1": used, "used2":used})
             
         return jsonify({"success": True})
     except:
@@ -147,19 +149,47 @@ def dashboard():
         return jsonify({"error": "Invalid form"})
      
 
+# @app.route("/api/hardware", methods=["POST"])
+# def hardware():
+#     args = request.args
+#     setNum = args["setNum"]
+#     result = Hardware_Info.find_one({"setNum": int(setNum)})
+#     del result['_id']  
+#     # val = request.json["val"]  
+#     # setval = request.json["set"]
+#     # Hardware_Info.update_one({"setNum": setval}, {"$set": { "capacity": val }})
+#     # result = Hardware_Info.find_one({"setNum": int(setNum)})
+#     return result
+
 @app.route("/api/hardware", methods=["POST"])
 def hardware():
-    args = request.args
-    setNum = args["setNum"]
-    result = Hardware_Info.find_one({"setNum": int(setNum)})
-    del result['_id']  
-    # val = request.json["val"]  
-    # setval = request.json["set"]
-    # Hardware_Info.update_one({"setNum": setval}, {"$set": { "capacity": val }})
-    # result = Hardware_Info.find_one({"setNum": int(setNum)})
-    return result
+    try:
+        #Get the set info from the request 
+        print(request.json)
+        set1val = request.json["set1"]
+        set2val = request.json['set2']
+        id = request.json["id"]
+        print("hello",set1val,set2val,id)
 
-   
+        if Project_Info.find_one({"projectid": id}) is not None:
+            result = Project_Info.find_one({"projectid": id})
+            used1 = result.get("used1") + int(set1val) 
+            used2 = result.get("used2") + int(set2val)  
+            cap1 = result.get("cap1") - int(set1val) 
+            cap2 = result.get("cap2") - int(set2val) 
+
+            Project_Info.update_one({"projectid": id}, {"$set": { "used1": int(used1), "used2": int(used2), "cap1": int(cap1), "cap2": int(cap2)}})
+            result = Project_Info.find_one({"projectid": id})
+            del result['_id'] 
+            return result
+            return jsonify({"success": True})
+        else:
+        #         # if a project with projectID does not exist, send a feedback message
+            return jsonify({"error": "Project does not Exist"})
+        #     return jsonify({"error": "Incorrect Password"})  
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return jsonify({"error": "Problem with Form"})
 
      
 

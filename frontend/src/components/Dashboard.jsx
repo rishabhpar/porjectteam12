@@ -44,7 +44,7 @@ class Dashboard extends React.Component {
                 
                  }
              });};
-
+            
     //potential method to display data from datbase
      displayProject = (arr) =>{
         return arr.map((na, index) => (
