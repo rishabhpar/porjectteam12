@@ -128,7 +128,6 @@ def newproject():
 @app.route("/api/dashboard", methods=["POST"])
 def dashboard():
     try:
-    
         # pull form submission data.
         # encrypt sensitive information like project id
         searchid = request.json["searchid"]
@@ -151,6 +150,9 @@ def hardware():
 
 
 # API to delete a project
+# Params:
+    # projectid: required string
+    # password: required string
 @app.route("/api/deleteproject", methods=["POST"])
 def deleteproject():
     try:
@@ -173,6 +175,83 @@ def deleteproject():
     except:
         print("Unexpected error:", sys.exc_info()[0])
         return jsonify({"error": "Problem with Form"})
+
+# Returns the project Name, description and project id given a project id.
+# Params:
+    # projectid: required string
+@app.route("/api/projectdetails", methods=["POST"])
+def projectdetails():
+    try:
+        projectID = request.json["projectid"]
+        # Get the project from the projectid
+        project = Project_Info.find_one({"projectid": projectID})
+        # Handle case of invalid projectid
+        if project is None:
+            return jsonify({"error": "Project with this ID does not exist"})
+        # Remove password and db id from response before sending to front end.
+        project.pop('_id')
+        project.pop('password')
+        return jsonify(project)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return jsonify({"error": "Problem with Form"})
+
+# API endpoint to update a password of any kind
+# Params:
+    # currentPassword: required string
+    # newPassword: required string
+    # accountType: "project" or "user"
+    # email: required if accountType is "user"
+    # projectid: required if accountType is "project"
+@app.route("/api/updatepassword", methods=["POST"])
+def updatepassword():
+    print(request)
+    try:
+        currentPassword = request.json["currentPassword"]
+        newPassword = request.json["newPassword"]
+
+        print(currentPassword, newPassword)
+        # This should be either "project" or "user"
+        accountType = request.json["accountType"]
+
+        #Handle ProjectCase
+        if accountType == "project":
+            projectID = request.json["projectid"]
+            project = Project_Info.find_one({"projectid": projectID})
+            # Verify project exists and that the current password matches
+            if project and pbkdf2_sha256.verify(currentPassword, project['password']):
+                # Update the password
+                Project_Info.update_one({ "projectid": projectID}, { "$set": { "password": pbkdf2_sha256.hash(newPassword)} })
+                return jsonify({"success": True})
+            else:
+                # If a project with entered projectid does not exist, send a feedback message
+                if project is None:
+                    return jsonify({"error": "Entered projectID is not associated with a project"})
+                return jsonify({"error": "Incorrect Password"})
+
+        #Handle User case
+        elif accountType == "user":
+            email = request.json["email"]
+            email_hashed = (bcrypt.hashpw(str.encode(email), salt)).decode()
+            user = Account_Info.find_one({"email": email_hashed})
+            # Verify user account exists and that the current password matches
+            if user and pbkdf2_sha256.verify(currentPassword, user['password']):
+                # Update the password
+                Account_Info.update_one({ "email": email_hashed}, { "$set": { "password": pbkdf2_sha256.hash(newPassword)} })
+                return jsonify({"success": True})
+            else:
+                # If a user with entered email does not exist, send a feedback message
+                if user is None:
+                    return jsonify({"error": "Entered email is not associated with a user"})
+                return jsonify({"error": "Incorrect Password"})
+
+        else:
+            return jsonify({"error": "Invalid Account Type"})
+
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return jsonify({"error": "Problem with Form"})
+
 
 if __name__ == "__main__":
     app.run(debug=True) # debug=True restarts the server everytime we make a change in our code
