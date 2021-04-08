@@ -26,6 +26,9 @@ Account_Info = User_DB.users
 Project_DB = client.get_database('project_information')
 Project_Info = Project_DB.projects
 
+Hardware_DB = client.get_database('hardware_information')
+Hardware_Info = Hardware_DB.hardware
+
 # create a password policy to ensure strong passwords from users
 policy = PasswordPolicy.from_names(
     length=8,  # min length: 8
@@ -125,10 +128,21 @@ def newproject():
         # there was an error while processing form submission
         return jsonify({"error": "Invalid form"})       
 
-@app.route("/api/hardware", methods=["GET"])
+@app.route("/api/hardware", methods=["POST"])
 def hardware():
-    return Hardware_Info
+    args = request.args
+    setNum = args["setNum"]
+    result = Hardware_Info.find_one({"setNum": int(setNum)})
+    del result['_id']  
+    # val = request.json["val"]  
+    # setval = request.json["set"]
+    # Hardware_Info.update_one({"setNum": setval}, {"$set": { "capacity": val }})
+    # result = Hardware_Info.find_one({"setNum": int(setNum)})
+    return result
 
+   
+
+     
 
 if __name__ == "__main__":
     app.run(debug=True) # debug=True restarts the server everytime we make a change in our code
