@@ -173,15 +173,33 @@ def hardware():
         print(request.json)
         set1val = request.json["set1"]
         set2val = request.json['set2']
+        check1 = request.json["check1"].lower()
+        check2 = request.json["check2"].lower()
         id = request.json["id"]
         print("hello",set1val,set2val,id)
 
         if Project_Info.find_one({"projectid": id}) is not None:
             result = Project_Info.find_one({"projectid": id})
-            used1 = result.get("used1") + int(set1val) 
-            used2 = result.get("used2") + int(set2val)  
-            cap1 = result.get("cap1") - int(set1val) 
-            cap2 = result.get("cap2") - int(set2val) 
+            used1 = result.get("used1")
+            cap1 = result.get("cap1")
+            used2 = result.get("used2")
+            cap2 = result.get("cap2")
+            
+            if check1 == "out":                
+                used1 = result.get("used1") + int(set1val)   
+                cap1 = result.get("cap1") - int(set1val) 
+
+            elif check1 == "in":
+                used1 = result.get("used1") - int(set1val) 
+                cap1 = result.get("cap1") + int(set1val) 
+
+            elif check2 == "out":                
+                used2 = result.get("used2") + int(set2val)   
+                cap2 = result.get("cap2") - int(set2val) 
+
+            elif check2 == "in":
+                used2 = result.get("used2") - int(set2val) 
+                cap2 = result.get("cap2") + int(set2val)     
 
             Project_Info.update_one({"projectid": id}, {"$set": { "used1": int(used1), "used2": int(used2), "cap1": int(cap1), "cap2": int(cap2)}})
             result = Project_Info.find_one({"projectid": id})

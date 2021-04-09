@@ -55,7 +55,8 @@ class Hardware extends Component{
             // get the form data on submission and post to the server
             set1: 0,
             set2: 0,
-            check: 0,
+            check1: 'in',
+            check2: 'in',
             id: this.state.searchid
         })
             .then(response => {
@@ -71,12 +72,13 @@ class Hardware extends Component{
             });
     }
 
-    handleHardwarePostRequest(set1, set2, check) {
+    handleHardwarePostRequest(set1, set2, check1, check2) {
         axios.post(config.url.API_URL.concat("/api/hardware"), {
             // get the form data on submission and post to the server
             set1: set1,
             set2: set2,
-            check: check,
+            check1: check1,
+            check2: check2,
             id: this.state.searchid
         })
             .then(response => {
@@ -96,7 +98,8 @@ class Hardware extends Component{
         this.hardwarePostRequest(
             document.getElementById("set1").value,
             document.getElementById("set2").value,
-            document.getElementById("check").value
+            document.getElementById("check1").value,
+            document.getElementById("check2").value
         );
     };
 
@@ -150,11 +153,14 @@ class Hardware extends Component{
                             <label for="set1" style={divStyle}>Set 1: </label>
                             <input type="set1" id="set1" class="field" required/>
 
+                            <label for="check1" style={divStyle}>Check "In"/"Out" </label>
+                            <input type="check1" id="check1" class="field" required/>
+
                             <label for="set2" style={divStyle}>Set 2: </label>
                             <input type="set2" id="set2" class="field" required/>
 
-                            <label for="check" style={divStyle}>Check In or Out</label>
-                            <input type="check" id="check" class="field" required/>                            
+                            <label for="check2" style={divStyle}>Check "In"/"Out" </label>
+                            <input type="check2" id="check2" class="field" required/>                            
 
                             <span>
                                 <input type="submit" value="Submit" class="btn"/>
