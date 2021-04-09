@@ -5,8 +5,7 @@ import pymongo
 from passlib.hash import pbkdf2_sha256
 # cors is used to relax security, only for development
 from flask_cors import CORS
-# import class from config.py
-from config import BaseConfig
+
 # import password_strength to ensure the user's password is strong
 from password_strength import PasswordPolicy
 # use bcrypt to hash the email such that the same string hash the same hash
