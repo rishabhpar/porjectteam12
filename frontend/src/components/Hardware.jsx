@@ -135,16 +135,44 @@ class Hardware extends Component{
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Link</td>
-                                <td>words</td>
+                                <td><a href="https://physionet.org/static/published-projects/adfecgdb/abdominal-and-direct-fetal-ecg-database-1.0.0.zip">Abdominal and Direct Fetal ECG Database</a></td>
+                                <td>Multichannel fetal electrocardiogram recordings obtained from 5 different women in labor, between 38 and 41 weeks of gestation.</td>
                             </tr>
                             <tr>
-                                <td>Link</td>
-                                <td>words</td>
+                                <td><a href="https://physionet.org/static/published-projects/aftdb/af-termination-challenge-database-1.0.0.zip">AF Termination Challenge Database</a></td>
+                                <td>ECG recordings created for the Computers in Cardiology Challenge 2004, which focused on predicting spontaneous termination of atrial fibrillation.</td>
                             </tr>
                             <tr>
-                                <td>Link</td>
-                                <td>words</td>
+                                <td><a href="https://physionet.org/static/published-projects/ahadb/aha-database-sample-excluded-record-1.0.0.zip">AHA Database Sample Excluded Record</a></td>
+                                <td>Two ECG signals that were excluded from the 1980 American Heart Association database.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://physionet.org/static/published-projects/aami-ec13/ansiaami-ec13-test-waveforms-1.0.0.zip">ANSI/AAMI EC13 Test Waveforms</a></td>
+                                <td>The files in this set can be used for testing a variety of devices that monitor the electrocardiogram. The recordings include both synthetic and real waveforms.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://physionet.org/static/published-projects/apnea-ecg/apnea-ecg-database-1.0.0.zip">Apnea-ECG Database</a></td>
+                                <td>Seventy ECG signals with expert-labelled apnea annotations and machine-generated QRS annotations.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://physionet.org/static/published-projects/pmd/a-pressure-map-dataset-for-in-bed-posture-classification-1.0.0.zip">A Pressure Map Dataset for In-bed Posture Classification</a></td>
+                                <td>Pressure sensor data captured from 13 participants in various sleeping postures.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://physionet.org/static/published-projects/chfdb/bidmc-congestive-heart-failure-database-1.0.0.zip">BIDMC Congestive Heart Failure Database</a></td>
+                                <td>Long-term ECG recordings from 15 subjects with severe congestive heart failure.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://physionet.org/static/published-projects/bidmc/bidmc-ppg-and-respiration-dataset-1.0.0.zip">BIDMC PPG and Respiration Dataset</a></td>
+                                <td>ECG signals extracted from the MIMIC-II Matched Waveform Database, with manual breath annotations added by annotators using impedance respiratory signal.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://physionet.org/static/published-projects/bpssrat/blood-pressure-in-salt-sensitive-dahl-rats-1.0.0.zip">Blood Pressure in Salt-Sensitive Dahl Rats</a></td>
+                                <td>This database contains continuous blood pressure recordings for 9 Dahl SS rats and 6 Dahl SS.13BN rats, under high and low salt conditions.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://physionet.org/static/published-projects/body-sway-music-vr/body-sway-when-standing-and-listening-to-music-modified-to-reinforce-virtual-reality-environment-motion-1.0.0.zip">Body Sway When Standing and Listening to Music Modified to Reinforce Virtual Reality Environment Motion</a></td>
+                                <td>This data were intended to show that music manipulated to match VR motion provided by an Oculus Rift head mounted display increased body sway when standing still.</td>
                             </tr>
                         </tbody>
                     </table>      
