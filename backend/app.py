@@ -13,8 +13,10 @@ from password_strength import PasswordPolicy
 import bcrypt
 # Needed to verify the server is who it says it is. Mac won't work without and Cloud stuff might not either.
 import certifi
-# create a Flask app
+#Used to have proper log statements until error handling is fully implented
 import sys
+# create a Flask app
+import json
 app = Flask(__name__)
 CORS(app)
 
@@ -29,6 +31,9 @@ Project_Info = Project_DB.projects
 
 Hardware_DB = client.get_database('hardware_information')
 Hardware_Info = Hardware_DB.hardware
+
+Datasets_DB = client.get_database('dataset_information')
+Datasets_Info = Datasets_DB.datasets
 
 # create a password policy to ensure strong passwords from users
 policy = PasswordPolicy.from_names(
@@ -249,12 +254,10 @@ def projectdetails():
     # projectid: required if accountType is "project"
 @app.route("/api/updatepassword", methods=["POST"])
 def updatepassword():
-    print(request)
     try:
         currentPassword = request.json["currentPassword"]
         newPassword = request.json["newPassword"]
 
-        print(currentPassword, newPassword)
         # This should be either "project" or "user"
         accountType = request.json["accountType"]
 
@@ -296,6 +299,19 @@ def updatepassword():
         print("Unexpected error:", sys.exc_info()[0])
         return jsonify({"error": "Problem with Form"})
 
+#API to pull the list of datasets from the database
+@app.route("/api/getdatasets", methods=["GET"])
+def getdatasets():
+    try:
+        datasets = Datasets_Info.find({}, { "name": 1, "link": 1, "_id": 0, "description": 1}).limit(10)
+        # for dataset in datasets:
+        #     print(dataset, type(dataset))
+        sets = {}
+        sets["datasets"] = datasets
+        return json.dumps(sets)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return jsonify({"error": "Problem with Form"})
 
 if __name__ == "__main__":
     app.run(debug=True) # debug=True restarts the server everytime we make a change in our code
