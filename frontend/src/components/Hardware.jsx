@@ -10,100 +10,56 @@ import { config } from './Constants';
 
 class Hardware extends Component{
 
-    constructor(props) {
-        super(props);
-        console.log("IN CONSTRUCTOR")
-        this.initializeSearchid()
-        console.log(this.props)
-        if(this.state == undefined || this.state.searchid == undefined) {
-            this.state = {
-                used1: '234',
-                used2:'123',
-                cap1: '345',
-                cap2:'456',
-                hw: {},
-                searchid: this.searchid
-            }
-        } else {
-            this.state = {
-                used1: '234',
-                used2:'123',
-                cap1: '345',
-                cap2:'456',
-                hw: {}
-            }
+    state = {
+        hw: [],
+        err: ""
         }
-        
-        
-
-        this.handleHardwarePostRequest = this.handleHardwarePostRequest.bind(this);
-    }
-    setNum = 1
-    url = 'http://127.0.0.1:5000/api/hardware?setNum=' + this.setNum
-
-    initializeSearchid() {
-        console.log(this.searchid)
-        if(this.props.history.action == "PUSH"){
-            this.searchid = this.props.location.state.searchid
-        };
-        
-    }
-    componentDidMount() {
-        console.log("COMPONENT DID MOUNT")
-        // this.hardwarePostRequest(0, 0, 0)
-        axios.post(config.url.API_URL.concat("/api/hardware"), {
+    
+    hardware = (e) => {
+        e.preventDefault();
+         axios.post(config.url.API_URL.concat("/api/hardware"), {
             // get the form data on submission and post to the server
-            set1: 0,
-            set2: 0,
-            check1: 'in',
-            check2: 'in',
-            id: this.state.searchid
+            set1: document.getElementById("set1").value,
+            set2: document.getElementById("set2").value,
+            check1: document.getElementById("check1").value,
+            check2: document.getElementById("check2").value,
+            id: this.props.location.state.searchid
         })
-            .then(response => {
-                const hw = response.data;
-                this.setState({ hw }); 
-                console.log(hw)
-              //  console.log(JSON.stringify(this.id))
-             //   console.log(JSON.stringify(response.data)) 
-                       
-            })
-            .catch(() => {
-                alert('error data not received')
-            });
-    }
-
-    handleHardwarePostRequest(set1, set2, check1, check2) {
-        axios.post(config.url.API_URL.concat("/api/hardware"), {
-            // get the form data on submission and post to the server
-            set1: set1,
-            set2: set2,
-            check1: check1,
-            check2: check2,
-            id: this.state.searchid
-        })
-            .then(response => {
-                const hw = response.data;
-                this.setState({ hw }); 
-                
-              //  console.log(JSON.stringify(this.id))
-             //   console.log(JSON.stringify(response.data)) 
-                       
-            })
-            .catch(() => {
-                alert('error data not received')
-            });
-    }
-
-    hardwarePostRequest = () => {
-        this.hardwarePostRequest(
-            document.getElementById("set1").value,
-            document.getElementById("set2").value,
-            document.getElementById("check1").value,
-            document.getElementById("check2").value
-        );
+        .then((res) => {
+            if (res.data.error) {
+                // if there is an error, update err with message
+                // and internally communicate that the registration failed
+                this.setState({ err: res.data.error });
+                this.setState({ hardware: false });
+            } else {
+                // else, clear err message
+                // and internally communicate that the registration succeeded
+                this.setState({ hardware: true });
+                this.setState({ err: "" });
+                const hw = res.data;
+                this.setState({ hw });  
+              
+            }})
+            // .then(response => {
+            //     const hw = response.data;
+            //     this.setState({ hw }); 
+            //   //  console.log(JSON.stringify(this.id))
+            //  //   console.log(JSON.stringify(response.data)) 
+            //     console.log(hw)             
+            // })
+        .catch(() => {
+            alert('error data not received')
+        });
     };
 
-    searchid = '0';
+    nextPath() {
+        auth.login(() => {
+            this.props.history.push({
+                pathname: "/dashboard",
+            });
+        })
+        }
+    
     render(){
         console.log("RENDER")
         
@@ -111,65 +67,47 @@ class Hardware extends Component{
             color:'white'
         };
       
-        // let checkin;
-        // if ( < this.setNum) {
-        //   alert = <Alert message={`Check in capacity reached, please try again`}></Alert>;
-        // }
-      //  let checkout;
-       // checkout = <Alert message={`Check your form and try again! (${this.state.a})`}></Alert>;
-        
-        // {this.state.a.map((hi) => (
-        //     <h1 style={divStyle}>{hi.setNum}</h1>
-        //     ))}
-        // {this.state.a.map((hi) => (
-        //     <h1 style={divStyle}>{hi.setNum}</h1>
-        //     ))}
-
-      //  <div>{this.display(this.state.a)}</div>
-    //  { this.state.hw.map(hws => <li>{hws.capacity}</li>)}
-
-//     <a className='divStyle' href="/login">
-//     <Button size="sm" id="set1" color="light">Set 1</Button>
-// </a>
-// <a className='divStyle' href="/register">
-//     <Button  size="sm" id="set2" color="light">Set 2</Button>
-// </a>
-
+        let alert;
+        if (this.state.err !== "") {
+          alert = <Alert message={`Check your form and try again! (${this.state.err})`}></Alert>;
+        } 
 
         return (
-            <div className="container">
-                <h1 class="center" style={divStyle}> <strong>Resource Management</strong></h1>
-                <br></br><br></br>
-
-                  <h1 style={divStyle}>For project ID: {this.state.searchid}</h1>
-                    
-                    <h1>Set 1 checked out: {this.state.hw.used1}     Set 1 capacity left: {this.state.hw.cap1}</h1>
-                    <h1></h1>
-                    <h1>Set 2 checked out: {this.state.hw.used2}     Set 2 capacity left: {this.state.hw.cap2}</h1>
-                    <h1></h1>
+            <div>
+                <h1 class = "center" style={divStyle}> <strong>Resource Management</strong></h1>
+                <br></br>
+                   
                     <div class="right">
-                    <form name="signup_form" onSubmit={this.hardwarePostRequest}>
+                    <p style={divStyle}>To view hardware availability in current state, press "submit"</p>
+                    <form name="signup_form" onSubmit={this.hardware}>
 
-                            <label for="set1" style={divStyle}>Set 1: </label>
-                            <input type="set1" id="set1" class="field" required/>
+                        <label for="set1" style={divStyle}>Set 1 Request #: </label>
+                        <input type="set1" id="set1" class="field" />
 
-                            <label for="check1" style={divStyle}>Check "In"/"Out" </label>
-                            <input type="check1" id="check1" class="field" required/>
+                        <label for="check1" style={divStyle}>Check "In"/"Out" </label>
+                        <input type="check1" id="check1" class="field" />
 
-                            <label for="set2" style={divStyle}>Set 2: </label>
-                            <input type="set2" id="set2" class="field" required/>
+                        <label for="set2" style={divStyle}>Set 2 Request #: </label>
+                        <input type="set2" id="set2" class="field" />
 
-                            <label for="check2" style={divStyle}>Check "In"/"Out" </label>
-                            <input type="check2" id="check2" class="field" required/>                            
+                        <label for="check2" style={divStyle}>Check "In"/"Out" </label>
+                        <input type="check2" id="check2" class="field" />                            
+                        {alert}
+                        <span>
+                            <input type="submit" value="Submit" class="btn"/>
+                                                
+                        </span>
+                    </form>
 
-                            <span>
-                                <input type="submit" value="Submit" class="btn"/>
-                                                 
-                            </span>
-                        </form>
-
-                        </div>                        
+                    </div>                 
+                    <h1 style={divStyle}>For project ID: {this.state.hw.projectid}</h1>
                     
+                    <h1 style={divStyle}>Set 1 checked out: {this.state.hw.used1} | Set 1 capacity left: {this.state.hw.cap1}</h1>
+                   
+                    <h1 style={divStyle}>Set 2 checked out: {this.state.hw.used2} | Set 2 capacity left: {this.state.hw.cap2}</h1>       
+                    
+                    <p style = {divStyle}>----------------------------------------------------------------------------------------------------------------</p>
+                    <p>*Area below to be completed for checkpoint 3</p>
                     <h1 style = {divStyle}>Hardware Set 1</h1>
                     <div class="bar">
                         <section id="occupied" style={{width: '20%'}}>20</section>
@@ -182,16 +120,38 @@ class Hardware extends Component{
                         <section id="occupied" style={{width: '20%'}}>20</section>
                         <section id="personal" style={{width: '50%'}}>50</section>
                         <section id="available" style={{width: '30%'}}>30</section>
-                    </div>                 
+                    </div>          
+                    <br></br><br></br>
 
-                    {/*LINK TO PHYSIONET PAGE*/}
-                    <a className='divStyle' class = "btn-add" href="/dashboard">
-                        <Button size="lg"  color="dark">ADD DATASET</Button>
-                    </a>
-                    <a className='divStyle' class = "btn-back" href="/dashboard">
-                        <Button size="lg"  color="dark">Back</Button>
-                    </a>
-                
+                    <div>
+                    <h1 style = {divStyle} class = "center"><strong>Download Dataset from PhysioNet</strong></h1>
+
+                    <table class="hoverTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Link</td>
+                                <td>words</td>
+                            </tr>
+                            <tr>
+                                <td>Link</td>
+                                <td>words</td>
+                            </tr>
+                            <tr>
+                                <td>Link</td>
+                                <td>words</td>
+                            </tr>
+                        </tbody>
+                    </table>      
+
+                    </div>
+                    <br></br>
+                    <button onClick={() => this.nextPath()} class = "btn" variant = "outline-primary">Back</button>                             
 
             </div>
         );

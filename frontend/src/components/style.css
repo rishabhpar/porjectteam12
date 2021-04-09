@@ -52,7 +52,7 @@ body {
 
 .right{
   position: absolute;
-  right: 10px;
+  right: 200px;
 }
 
 .left{
@@ -169,17 +169,30 @@ input[type=searchid]:focus {
 #searchpass:focus {
   width: 500px;
 }
-tr:nth-child(even) {background-color: #f2f2f2;}
-th, td {
-  border-spacing: 100px 100px;
- 
-  padding: 20px;
-  text-align: center;
-  vertical-align: middle;
-  position: relative;
-  right:550px;
-  top:50px;
+
+.hoverTable{
+  width:85%; 
+  border-collapse:collapse; 
+  margin-left:auto; 
+  margin-right:auto;
 }
+.hoverTable th{
+  height: 50px;
+  padding:7px; 
+  border:#4e95f4 1px solid;
+}
+.hoverTable td{ 
+  padding:7px; border:#4e95f4 1px solid;
+}
+/* Define the default color for all the table rows */
+.hoverTable tr{
+  background: #b8d1f3;
+}
+/* Define the hover highlight color for the table row */
+.hoverTable tr:hover {
+  background-color: #263b75;
+}
+
 
 @media only screen and (max-width: 520px) {
   .card-wrapper {

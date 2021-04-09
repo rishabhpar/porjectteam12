@@ -20,7 +20,7 @@ function App() {
                     <Route path="/" exact component={Home} />
                     <Route path="/login" exact component={Login} />
                     <Route path="/register" exact component={Register} />
-                    <Route path="/hardware" exact component={Hardware}/>
+                    <ProtectedRoute path="/hardware" exact component={Hardware}/>
                     <Route path="/newproject" exact component={NewProject}/>
                     {/*<Route path="/dashboard" exact component={Dashboard} />*/}
                     {/* the dashboard should not be viewable if user is not logged in */}

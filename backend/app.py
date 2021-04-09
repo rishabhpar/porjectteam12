@@ -27,9 +27,6 @@ Account_Info = User_DB.users
 Project_DB = client.get_database('project_information')
 Project_Info = Project_DB.projects
 
-Hardware_DB = client.get_database('hardware_information')
-Hardware_Info = Hardware_DB.hardware
-
 # create a password policy to ensure strong passwords from users
 policy = PasswordPolicy.from_names(
     length=8,  # min length: 8
@@ -149,18 +146,6 @@ def dashboard():
         return jsonify({"error": "Invalid form"})
      
 
-# @app.route("/api/hardware", methods=["POST"])
-# def hardware():
-#     args = request.args
-#     setNum = args["setNum"]
-#     result = Hardware_Info.find_one({"setNum": int(setNum)})
-#     del result['_id']  
-#     # val = request.json["val"]  
-#     # setval = request.json["set"]
-#     # Hardware_Info.update_one({"setNum": setval}, {"$set": { "capacity": val }})
-#     # result = Hardware_Info.find_one({"setNum": int(setNum)})
-#     return result
-
 @app.route("/api/hardware", methods=["POST"])
 def hardware():
     try:
@@ -171,7 +156,6 @@ def hardware():
         check1 = request.json["check1"].lower()
         check2 = request.json["check2"].lower()
         id = request.json["id"]
-        print("hello",set1val,set2val,id)
 
         if Project_Info.find_one({"projectid": id}) is not None:
             result = Project_Info.find_one({"projectid": id})
@@ -179,32 +163,36 @@ def hardware():
             cap1 = result.get("cap1")
             used2 = result.get("used2")
             cap2 = result.get("cap2")
-            
+
             if check1 == "out":                
                 used1 = result.get("used1") + int(set1val)   
                 cap1 = result.get("cap1") - int(set1val) 
 
-            elif check1 == "in":
+            if check1 == "in":
                 used1 = result.get("used1") - int(set1val) 
                 cap1 = result.get("cap1") + int(set1val) 
 
-            elif check2 == "out":                
+            if check2 == "out":                
                 used2 = result.get("used2") + int(set2val)   
                 cap2 = result.get("cap2") - int(set2val) 
 
-            elif check2 == "in":
+            if check2 == "in":
                 used2 = result.get("used2") - int(set2val) 
                 cap2 = result.get("cap2") + int(set2val)     
 
+            if cap1 > 100 or cap1 < 0:
+                return jsonify({"error": "Set 1 value invalid"})
+            if cap2 > 100 or cap2 < 0:
+                return jsonify({"error": "Set 2 value invalid"})
+        
             Project_Info.update_one({"projectid": id}, {"$set": { "used1": int(used1), "used2": int(used2), "cap1": int(cap1), "cap2": int(cap2)}})
             result = Project_Info.find_one({"projectid": id})
             del result['_id'] 
             return result
             return jsonify({"success": True})
         else:
-        #         # if a project with projectID does not exist, send a feedback message
+        #  if a project with projectID does not exist, send a feedback message
             return jsonify({"error": "Project does not Exist"})
-        #     return jsonify({"error": "Incorrect Password"})  
     except:
         print("Unexpected error:", sys.exc_info()[0])
         return jsonify({"error": "Problem with Form"})
