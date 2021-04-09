@@ -20,6 +20,10 @@ import json
 app = Flask(__name__)
 CORS(app)
 
+@app.route('/')
+def index():
+    return "<h1>Welcome to our server !!</h1>"
+
 # connect to cloud based mongodb
 client = pymongo.MongoClient("mongodb+srv://team12:adminBois&Gorls@cluster0.82uuk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", tlsCAFile=certifi.where())
 # get the specific database for user information
