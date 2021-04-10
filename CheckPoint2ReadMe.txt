@@ -10,7 +10,7 @@ User Instructions:
  or login as a returning user. Once successfully registered/logged in, the user will be taken to their personal dashboard in which they have three options.
  The first option is to create a new project by clicking on the large new project button. The second option is to log out and return to the home screen. The last 
  option is to access a pre-existing project by entering the project ID and the correct shared password for double security. After successfully entering the project
- information, the user will be taken to the hardware resources page. @Tej @ami add stuff here personal
-
+ information, the user will be taken to the hardware resources page.
+ 
 Known Issues:
 -N/A
