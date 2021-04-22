@@ -86,8 +86,7 @@ class Hardware extends Component{
         }
     
     render(){
-        console.log("RENDER")
-        
+
         var divStyle = {
             color:'white'
         };
@@ -105,7 +104,6 @@ class Hardware extends Component{
                 
                     
                     <div class="right">
-                    <p style={divStyle}>To view hardware availability in current state, press "submit"</p>
                     <form name="signup_form" onSubmit={this.hardware}>
 
                         <label for="set1" style={divStyle}>Set 1 Request #: </label>
@@ -135,9 +133,13 @@ class Hardware extends Component{
                     
                     <p style = {divStyle}>----------------------------------------------------------------------------------------------------------------</p>
                     <p>*Area below to be completed for checkpoint 3</p>
+                    <script>
+                        var used1 = {this.state.hw.used1};
+                        document.getElementById("occupied").value = used1;
+                    </script>
                     <h1 style = {divStyle}>Hardware Set 1</h1>
                     <div class="bar">
-                        <section id="occupied" style={{width: '20%'}}>20</section>
+                        <section id="occupied" style={{width: '20%'}}>{this.state.hw.used1}</section>
                         <section id="personal" style={{width: '50%'}}>50</section>
                         <section id="available" style={{width: '30%'}}>30</section>
                     </div>
@@ -205,8 +207,7 @@ class Hardware extends Component{
                     </table>      
 
                     </div>
-                    {/* <br></br>
-                    <button onClick={() => this.nextPath()} class = "btn" variant = "outline-primary">Back</button>                              */}
+                    <br></br>  
 
             </div>
         );

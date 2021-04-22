@@ -32,9 +32,11 @@ Account_Info = User_DB.users
 Project_DB = client.get_database('project_information')
 Project_Info = Project_DB.projects
 
-
 Datasets_DB = client.get_database('dataset_information')
 Datasets_Info = Datasets_DB.datasets
+
+Hardware_DB = client.get_database('hardware_information')
+Hardware_Info = Hardware_DB.hardware
 
 # create a password policy to ensure strong passwords from users
 policy = PasswordPolicy.from_names(
@@ -129,7 +131,8 @@ def newproject():
         if Project_Info.find_one({"projectid": projectID}) is not None:
             return jsonify({"error": "Project with that ID already exists"})
         else:
-            Project_Info.insert_one({"projName":projectname, "projectid":projectID,"password":pbkdf2_sha256.hash(projpassword), "description":desc, "cap1": cap, "cap2": cap, "used1": used, "used2":used})
+            Project_Info.insert_one({"projName":projectname, "projectid":projectID,"password":pbkdf2_sha256.hash(projpassword), "description":desc})
+            Hardware_Info.insert_one({"projectid":projectID, "cap1": cap, "cap2": cap, "used1": used, "used2":used})
             
         return jsonify({"success": True})
     except:
@@ -159,15 +162,14 @@ def dashboard():
 def hardware():
     try:
         #Get the set info from the request 
-        print(request.json)
         set1val = request.json["set1"]
         set2val = request.json['set2']
         check1 = request.json["check1"].lower()
         check2 = request.json["check2"].lower()
         id = request.json["id"]
 
-        if Project_Info.find_one({"projectid": id}) is not None:
-            result = Project_Info.find_one({"projectid": id})
+        if Hardware_Info.find_one({"projectid": id}) is not None:
+            result = Hardware_Info.find_one({"projectid": id})
             used1 = result.get("used1")
             cap1 = result.get("cap1")
             used2 = result.get("used2")
@@ -194,8 +196,8 @@ def hardware():
             if cap2 > 100 or cap2 < 0:
                 return jsonify({"error": "Set 2 value invalid"})
         
-            Project_Info.update_one({"projectid": id}, {"$set": { "used1": int(used1), "used2": int(used2), "cap1": int(cap1), "cap2": int(cap2)}})
-            result = Project_Info.find_one({"projectid": id})
+            Hardware_Info.update_one({"projectid": id}, {"$set": { "used1": int(used1), "used2": int(used2), "cap1": int(cap1), "cap2": int(cap2)}})
+            result = Hardware_Info.find_one({"projectid": id})
             del result['_id'] 
             return result
             return jsonify({"success": True})
