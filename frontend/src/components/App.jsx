@@ -5,6 +5,7 @@ import Login from "./Login";
 import Register from "./Register";
 import Dashboard from "./Dashboard";
 import Hardware from "./Hardware";
+import UpdateUserPassword from "./ForgotUserPassword";
 // use the ProtectedRoute component as a wrapper for components
 // that need to be password protected
 import ProtectedRoute from "../protected_route";
@@ -20,8 +21,9 @@ function App() {
                     <Route path="/" exact component={Home} />
                     <Route path="/login" exact component={Login} />
                     <Route path="/register" exact component={Register} />
+                    <Route path="/updateuserpassword" exact component={UpdateUserPassword} />
                     <ProtectedRoute path="/hardware" exact component={Hardware}/>
-                    <Route path="/newproject" exact component={NewProject}/>
+                    <ProtectedRoute path="/newproject" exact component={NewProject}/>
                     {/*<Route path="/dashboard" exact component={Dashboard} />*/}
                     {/* the dashboard should not be viewable if user is not logged in */}
                     <ProtectedRoute path="/dashboard" exact component={Dashboard} />
