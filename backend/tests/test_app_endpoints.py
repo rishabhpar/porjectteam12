@@ -3,7 +3,7 @@ from nose.tools import assert_true
 import requests
 import json
 
-# To test use the following command: nosetests --verbosity=2 --nocapture test_app.py 
+# To test use the following command: nosetests --verbosity=2 --nocapture test_app_endpoints.py 
 # The --nocapture flag allows for the print statements to show up
 
 #This is to test that the login endpoint is up and returns an ok response
