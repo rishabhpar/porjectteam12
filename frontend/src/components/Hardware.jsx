@@ -84,13 +84,10 @@ class Hardware extends Component{
         });
     };
 
-    nextPath() {
-        auth.login(() => {
-            this.props.history.push({
-                pathname: "/dashboard",
-            });
-        })
-        }
+    //method to push external paths
+    nextPath(path) {
+        this.props.history.push(path);
+      };
 
     
     render(){
@@ -106,7 +103,7 @@ class Hardware extends Component{
 
         return (
             <div>
-                <span class="below"><button  onClick={() => this.nextPath()} class = "btn" variant = "outline-primary">Back</button> </span>
+                <span class="below"><button  onClick={() => this.nextPath('/dashboard')} class = "btn" variant = "outline-primary">Back</button> </span>
                 <span class = "belowR"><button onClick={() => this.nextPath('/')} class = "btn" variant = "outline-primary">Logout</button></span>
                 <h1 class = "center" style={divStyle}> <strong>Resource Management</strong></h1>
                                         
