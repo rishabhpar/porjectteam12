@@ -52,12 +52,16 @@ body {
 
 .right{
   position: absolute;
-  right: 200px;
+  right: 300px;
 }
 
 .left{
-  position: absolute;
-  left: 10px;
+  position: relative;
+  left: 200px;
+}
+.cappos{
+  position: relative;
+  left: 325px;
 }
 
 h1 {
@@ -207,39 +211,35 @@ input[type=searchid]:focus {
   }
 }
 
-.bar{
+/* Progress Bar */
+progress[value] {
+  width: 500px;
   height: 40px;
-	width: 50%;
-  position: relative;
-  left: 10px;
-	display: flex;
-	border-radius: 4px;
-	overflow: hidden;
-  border: 2px solid white;
-  border-radius: 5px;
+  background-color: #f3f3f3;
+  border: 0;
+  border-radius: 9px;
 }
 
-.bar section {
-	height: 40px;
-  position: relative;
-  left: 10px;
-	line-height: 35px;
-	text-align: center;
-	color: white;
+progress {
+  width: 500px;
+  height: 40px;
+  background-color: #f3f3f3;
+  border: 0;
+  border-radius: 9px;
 }
-.bar section:last-of-type {
-	flex: auto;
+progress::-webkit-progress-bar {
+  width: 500px;
+  height: 40px;
+  background-color: #fcfcfc;
+  border: 0;
+  border-radius: 9px;
 }
-#occupied {
-  background: #eebc17;
-}
-
-#personal {
-  background: #05395c;
-}
-
-#available {
-  background: #42ac88;
+progress::-webkit-progress-value {
+  width: 500px;
+  height: 40px;
+  background-color: #331fdf;
+  border: 0;
+  border-radius: 9px;
 }
 
 /* Forms */
@@ -318,7 +318,16 @@ label {
   right:600px;
   top:90px
 }
-
+.below{
+  position:relative;
+  left:200px;
+  top:20px
+}
+.belowR{
+  position:relative;
+  left:71%;
+  top:20px
+}
 .btnLogout{
   margin: 0 0 24px;
   padding: 11px 30px 10px;
@@ -390,12 +399,11 @@ input[type=submit] {
   bottom: 10px;
   left: 50%;
 }
-.btn--back{
+.btn-back{
   position: absolute;
-  bottom: 10px;
-  right: 50%
+  left: 10px;
+  top: 10px;
 }
-
 #logout{
   display: flex;
   justify-content: flex-end;

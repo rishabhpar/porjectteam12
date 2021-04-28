@@ -40,7 +40,8 @@ class Hardware extends Component{
                 const hw = res.data;
                 this.setState({ hw });  
               
-            }})
+            }
+            })
         .catch(() => {
             alert('error data not received')
         });
@@ -48,6 +49,7 @@ class Hardware extends Component{
 
     
     hardware = (e) => {
+        
         e.preventDefault();
          axios.post(config.url.API_URL.concat("/api/hardware"), {
             // get the form data on submission and post to the server
@@ -71,7 +73,12 @@ class Hardware extends Component{
                 const hw = res.data;
                 this.setState({ hw });  
               
-            }})
+            }
+            document.getElementById('set1').value='';
+            document.getElementById('check1').value='';
+            document.getElementById('set2').value='';
+            document.getElementById('check2').value='';
+            })
         .catch(() => {
             alert('error data not received')
         });
@@ -84,6 +91,7 @@ class Hardware extends Component{
             });
         })
         }
+
     
     render(){
 
@@ -98,13 +106,12 @@ class Hardware extends Component{
 
         return (
             <div>
-                <button  onClick={() => this.nextPath()} class = "btn" variant = "outline-primary">Back</button> 
-                    <br></br>
+                <span class="below"><button  onClick={() => this.nextPath()} class = "btn" variant = "outline-primary">Back</button> </span>
+                <span class = "belowR"><button onClick={() => this.nextPath('/')} class = "btn" variant = "outline-primary">Logout</button></span>
                 <h1 class = "center" style={divStyle}> <strong>Resource Management</strong></h1>
-                
-                    
-                    <div class="right">
-                    <form name="signup_form" onSubmit={this.hardware}>
+                                        
+                    <span class="right">
+                    <form name="form" onSubmit={this.hardware}>
 
                         <label for="set1" style={divStyle}>Set 1 Request #: </label>
                         <input type="set1" id="set1" class="field" />
@@ -119,39 +126,26 @@ class Hardware extends Component{
                         <input type="check2" id="check2" class="field" />                            
                         {alert}
                         <span>
-                            <input type="submit" value="Submit" class="btn"/>
-                                                
+                        <input type="submit"  value="Submit" class="btn"/>
                         </span>
+
                     </form>
+                    </span> 
 
-                    </div>                 
-                    <h1 style={divStyle}>For project ID: {this.state.hw.projectid}</h1>
-                    
-                    <h1 style={divStyle}>Set 1 checked out: {this.state.hw.used1} | Set 1 capacity left: {this.state.hw.cap1}</h1>
-                   
-                    <h1 style={divStyle}>Set 2 checked out: {this.state.hw.used2} | Set 2 capacity left: {this.state.hw.cap2}</h1>       
-                    
-                    <p style = {divStyle}>----------------------------------------------------------------------------------------------------------------</p>
-                    <p>*Area below to be completed for checkpoint 3</p>
-                    <script>
-                        var used1 = {this.state.hw.used1};
-                        document.getElementById("occupied").value = used1;
-                    </script>
-                    <h1 style = {divStyle}>Hardware Set 1</h1>
-                    <div class="bar">
-                        <section id="occupied" style={{width: '20%'}}>{this.state.hw.used1}</section>
-                        <section id="personal" style={{width: '50%'}}>50</section>
-                        <section id="available" style={{width: '30%'}}>30</section>
-                    </div>
-                    <br></br><br></br>
-                    <h1 style = {divStyle}>Hardware Set 2</h1>
-                    <div class="bar">
-                        <section id="occupied" style={{width: '20%'}}>20</section>
-                        <section id="personal" style={{width: '50%'}}>50</section>
-                        <section id="available" style={{width: '30%'}}>30</section>
-                    </div>          
-                    <br></br><br></br>
+                    <span class="left">                
+                    <span><h1 style={divStyle}><strong>Project ID: {this.state.hw.projectid}</strong></h1></span>
+                                        
+                    <h1 style = {divStyle} for="file">Hardware Set 1</h1>
+                    <progress id="file" height = '10px' value={this.state.hw.used1} max="100"> </progress>
+                    <h5 style = {divStyle}><span>Used: {this.state.hw.used1}</span><span class = "cappos">Available: {this.state.hw.cap1}</span></h5>
+                                        
+                    <h1 style = {divStyle} for="file">Hardware Set 2</h1>
+                    <progress id="file" height = '10px' value={this.state.hw.used2} max="100"> {this.state.hw.used2} </progress>
+                    <h5 style = {divStyle}><span>Used: {this.state.hw.used2}</span><span class = "cappos">Available: {this.state.hw.cap2}</span></h5>
+                    </span>
 
+                    <br></br><br></br>
+                    <br></br><br></br>
                     <div>
                     <h1 style = {divStyle} class = "center"><strong>Download Dataset from PhysioNet</strong></h1>
 
