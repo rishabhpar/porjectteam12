@@ -1,0 +1,8 @@
+---------- Non-Existing User Test; Expected Failure ----------
+{"email": "happyhappy@lilducky.com", "password": "Testing123!"}
+---------- Incorrect Password Test; Expected Failure ----------
+{"email": "testingme@gmail.com", "password": "Hi"}
+---------- Empty Form Test; Expected Failure ----------
+{"email": "", "password": ""}
+---------- Happy Case; Expected Success ----------
+{"email": "testingme@gmail.com", "password": "Testing123!"}
