@@ -89,7 +89,7 @@ class Login extends Component {
                     <h2 class="center"><a href="/updateuserpassword">Update Password?</a></h2>
 
                     {/* go back to the login page */}
-                    <h2 class="center">Cancel? <a href="/login">Go Back</a></h2>
+                    <h2 class="center">Cancel? <a href="/">Go Back</a></h2>
                 </div>
             </div>
             </div>
