@@ -5,9 +5,7 @@ from nose.tools import assert_is_not_none, assert_list_equal, assert_true
 from app_handler import *
 from passlib.hash import pbkdf2_sha256
 
-# import os
-# os.chdir("../")
-# print("****************************", os.getcwd())
+# To test use the following command: nosetests --verbosity=2 --nocapture tests/test_app_handler.py 
 
 @patch('app_handler.Account_Info.find_one')
 def test_login_handler_happy(mock_find_one):
