@@ -145,14 +145,19 @@ def dashboard():
         # pull form submission data.
         # encrypt sensitive information like project id
         searchid = request.json["searchid"]
-        projpassword = request.json["password"]
+        password = request.json["password"]
         
         # check to see if project already exists; else, communicate with user that this already exists
-        if Project_Info.find_one({"projectid": searchid}) is None:
-            return jsonify({"error": "Project with that ID does not exist"})
-        
-            
-        return jsonify({"success": True})
+        proj = Project_Info.find_one({"projectid": searchid})
+
+        # if a project exists and the password entered in the form
+        # matches, this is a successful project
+        if proj and pbkdf2_sha256.verify(password, proj['password']):
+            return jsonify({"success": True})
+        else:
+            if proj is None:
+                return jsonify({"error": "Project with that ID does not exist"})
+            return jsonify({"error": "Incorrect Password"})  
     except:
         # there was an error while processing form submission
         return jsonify({"error": "Invalid form"})

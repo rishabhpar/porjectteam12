@@ -243,3 +243,40 @@ def test_getdatasets_endpoint():
     print(response.json())
 
     assert_true(response.ok)
+
+####################################################################################################################################
+    
+#These are 4 tests that the dashboard endpoint is up and returns an ok response for projects
+def test_dashboard_endpoint_bad_id():
+    # Send a request to the dashboard endpoint and store the response
+    id_credentials = {"projectid":"0000", "password": "Testing123!"}
+    endpoint = "http://backendteam12.herokuapp.com/api/dashboard"
+    response = requests.post(endpoint, json=id_credentials)
+
+    assert response.json()["error"] == "Project with that ID does not exist"
+
+
+def test_dashboard_endpoint_bad_password():
+    # Send a request to the dashboard endpoint and store the response
+    id_credentials = {"projectid":"0000", "password": "Testing123!"}
+    endpoint = "http://backendteam12.herokuapp.com/api/dashboard"
+    response = requests.post(endpoint, json=id_credentials)
+
+    assert response.json()["error"] == "Incorrect Password"
+
+
+def test_login_endpoint_empty_form():
+    # Send a request to the login endpoint and store the response
+    id_credentials = {"projectid":" ", "password": " "}
+    endpoint = "http://backendteam12.herokuapp.com/api/dashboard"
+    response = requests.post(endpoint, json=id_credentials)
+
+    assert response.json()["error"] == "Project with that ID does not exist"
+
+
+def test_login_endpoint_happy_case():
+    # Send a request to the login endpoint and store the response
+    id_credentials = {"projectid":"9999", "password": "hello"}
+    endpoint = "http://backendteam12.herokuapp.com/api/dashboard"
+    response = requests.post(endpoint, json=id_credentials)
+    assert response.json()["success"] == True
