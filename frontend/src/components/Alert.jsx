@@ -6,9 +6,8 @@ import React from "react";
 function Alert(props) {
     return (
         <div
-            className="w3-pale-red w3-text-red w3-border w3-border-red w3-round-large"
-            style={{ padding: "1rem", marginTop: "1rem", whiteSpace: "nowrap", float: "left"}}>
-            {props.message}
+            className="w3-pale-red w3-text-red w3-border w3-border-red w3-round-large">
+            <span>{props.message}</span>
         </div>
     );
 }

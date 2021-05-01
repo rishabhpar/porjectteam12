@@ -7,6 +7,8 @@ import PositiveAlert from "./PositiveAlert";
 import { Button } from 'react';
 import auth from "../auth";
 import { config } from './Constants'
+import ProjectSuccess from "./ProjectSuccess";
+import ProjectFail from "./ProjectFail";
 
 var divStyle = {
     color:'white'
@@ -64,13 +66,13 @@ class Dashboard extends React.Component {
         
         let alert;
         if (this.state.err !== "") {
-          alert = <Alert message={`Check your form and try again! (${this.state.err})`}></Alert>;
+          alert = <ProjectFail message={`Check your form and try again! (${this.state.err})`}></ProjectFail>;
         } 
 
         // variable to hold an PositiveAlert component that is updated based on the project state
         let positiveAlert;
         if (this.state.dashboard) {
-            positiveAlert = <PositiveAlert message={`Success! Taking you to hardware checkout for the project`}></PositiveAlert>;
+            positiveAlert = <ProjectSuccess message={`Success! Taking you to hardware checkout for the project`}></ProjectSuccess>;
         }
         return (
             <div className="container">
