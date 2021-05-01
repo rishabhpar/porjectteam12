@@ -1,334 +1,176 @@
 from flask import Flask, request, jsonify
-# package to interface with mongodb
-import pymongo
-# passlib is the package we will use to encrypt passwords
-from passlib.hash import pbkdf2_sha256
 # cors is used to relax security, only for development
 from flask_cors import CORS
-
-# import password_strength to ensure the user's password is strong
-from password_strength import PasswordPolicy
 # use bcrypt to hash the email such that the same string hash the same hash
 import bcrypt
-# Needed to verify the server is who it says it is. Mac won't work without and Cloud stuff might not either.
-import certifi
-#Used to have proper log statements until error handling is fully implented
-import sys
+# import api handler functions
+from app_handler import *
+
 # create a Flask app
-import json
 app = Flask(__name__)
 CORS(app)
 
+# A simple home page to backend server
 @app.route('/')
 def index():
     return "<h1>Welcome to our server !!</h1>"
 
-# connect to cloud based mongodb
-client = pymongo.MongoClient("mongodb+srv://team12:adminBois&Gorls@cluster0.82uuk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", tlsCAFile=certifi.where())
-# get the specific database for user information
-User_DB = client.get_database('user_information')
-Account_Info = User_DB.users
-
-Project_DB = client.get_database('project_information')
-Project_Info = Project_DB.projects
-
-Datasets_DB = client.get_database('dataset_information')
-Datasets_Info = Datasets_DB.datasets
-
-Hardware_DB = client.get_database('hardware_information')
-Hardware_Info = Hardware_DB.hardware
-
-# create a password policy to ensure strong passwords from users
-policy = PasswordPolicy.from_names(
-    length=8,  # min length: 8
-    uppercase=1,  # need min. 1 uppercase letters
-    numbers=1,  # need min. 1 digits
-    special=1,  # need min. 1 special characters
-)
-
-# the seed for hashing a string using bcrypt
-# should probably hide this
-f = open("extra/salt.txt", "r")
-salt = f.readline().encode()
-f.close()
-
-# route to log in to the application
-# we can only POST to the API
 @app.route("/api/login", methods=["POST"])
-def login():  
-    try:
-        # extract information from the submission form
-        email = request.json["email"]
-        email_hashed = (bcrypt.hashpw(str.encode(email), salt)).decode()
-        password = request.json["password"]
+def login():
+    """
+    API to login
 
-        # check for an existing user's email in the database using the way
-        # the email is stored in the database
-        user = Account_Info.find_one({"email": email_hashed})
+    Parameters
+    ----------
+    email : string
+    password : string
 
-        # if a user exists and the password entered in the form
-        # matches, this is a successful login; else, it is an error
-        # so we send back feedback
-        if user and pbkdf2_sha256.verify(password, user['password']):
-            return jsonify({"success": True})
-        else:
-            if user is None:
-                # if a user with entered email does not exist, send a feedback message
-                return jsonify({"error": "Entered email is not associated with a user"})
-            return jsonify({"error": "Incorrect Password"})  
-    except:
-        return jsonify({"error": "Problem with Form"})
-
+    Returns
+    -------
+    json
+        with keys "success" or "error"
+    """
+    return login_handler(request.json)
 
 @app.route("/api/register", methods=["POST"])
 def register():
-    try:
-        # pull form submission data.
-        # encrypt sensitive information like email and password
-        email = request.json["email"].lower()
-        email_hashed = bcrypt.hashpw(str.encode(email), salt).decode()
-        password = request.json["password"]
-        confirm_password = request.json["confirm_password"]
-        name = request.json["name"]
+    """
+    API to register
 
-        # confirm the password the user chooses is strong
-        if len(policy.test(password)) > 0:
-            return jsonify({"error": "Password is not strong enough. Minimums: 8 characters, 1 uppercase, 1 number, 1 special"})
+    Parameters
+    ----------
+    email : string
+    password : string
+    confirm_password : string
+    name : string
 
-        # make sure the user confirms the password properly
-        if password != confirm_password:
-            return jsonify({"error": "Passwords do not match"})
-        
-        # check to see if user already exists; else, communicate with user that an
-        # account already exists
-        if Account_Info.find_one({"email": email_hashed}) is not None:
-            return jsonify({"error": "User with that email already exists"})
-        else:
-            Account_Info.insert_one({"name":name, "email":email_hashed, "password":pbkdf2_sha256.hash(password)})
-            
-        return jsonify({"success": True})
-    except:
-        # there was an error while processing form submission
-        return jsonify({"error": "Invalid form"})       
+    Returns
+    -------
+    json
+        with keys "success" or "error"
+    """
+    return register_handler(request.json)
     
-
 @app.route("/api/newproject", methods=["POST"])
 def newproject():
-    try:
-        # pull form submission data.
-        # encrypt sensitive information like project id
-        projectID = request.json["projectid"]
-        projpassword = request.json["password"]
-        projectname = request.json["projName"]
-        desc = request.json["description"]
-        cap = 100
-        used = 0
-        # confirm the password the user chooses is strong
-        #if len(policy.test(projpassword)) > 0:
-         #   return jsonify({"error": "Password is not strong enough. Minimums: 8 characters, 1 uppercase, 1 number, 1 special"})
-        
-        # check to see if project already exists; else, communicate with user that this already exists
-        if Project_Info.find_one({"projectid": projectID}) is not None:
-            return jsonify({"error": "Project with that ID already exists"})
-        else:
-            Project_Info.insert_one({"projName":projectname, "projectid":projectID,"password":pbkdf2_sha256.hash(projpassword), "description":desc})
-            Hardware_Info.insert_one({"projectid":projectID, "cap1": cap, "cap2": cap, "used1": used, "used2":used})
-            
-        return jsonify({"success": True})
-    except:
-        # there was an error while processing form submission
-        return jsonify({"error": "Invalid form"})       
-    
+    """
+    API to create a newproject
+
+    Parameters
+    ----------
+    projectid : string
+    password : string
+    projName : string
+    description : string
+
+    Returns
+    -------
+    json
+        with keys "success" or "error"
+    """
+    return newproject_handler(request.json)     
+
 @app.route("/api/dashboard", methods=["POST"])
 def dashboard():
-    try:
-        # pull form submission data.
-        # encrypt sensitive information like project id
-        searchid = request.json["searchid"]
-        password = request.json["password"]
-        
-        # check to see if project already exists; else, communicate with user that this already exists
-        proj = Project_Info.find_one({"projectid": searchid})
+    """
+    API to login to hardware dashboard
 
-        # if a project exists and the password entered in the form
-        # matches, this is a successful project
-        if proj and pbkdf2_sha256.verify(password, proj['password']):
-            return jsonify({"success": True})
-        else:
-            if proj is None:
-                return jsonify({"error": "Project with that ID does not exist"})
-            return jsonify({"error": "Incorrect Password"})  
-    except:
-        # there was an error while processing form submission
-        return jsonify({"error": "Invalid form"})
+    Parameters
+    ----------
+    searchid : string
+    password : string
+
+    Returns
+    -------
+    json
+        with keys "success" or "error"
+    """
+    return dashboard_handler(request.json)
      
-
 @app.route("/api/hardware", methods=["POST"])
 def hardware():
-    try:
-        #Get the set info from the request 
-        set1val = request.json["set1"]
-        set2val = request.json['set2']
-        check1 = request.json["check1"].lower()
-        check2 = request.json["check2"].lower()
-        id = request.json["id"]
+    """
+    API to check in and checkout hardware resources
 
-        if Hardware_Info.find_one({"projectid": id}) is not None:
-            result = Hardware_Info.find_one({"projectid": id})
-            used1 = result.get("used1")
-            cap1 = result.get("cap1")
-            used2 = result.get("used2")
-            cap2 = result.get("cap2")
+    Parameters
+    ----------
+    set1 : string
+    set2 : string
+    check1 : string
+    check2 : string
+    id : string
 
-            if check1 == "out":                
-                used1 = result.get("used1") + int(set1val)   
-                cap1 = result.get("cap1") - int(set1val) 
+    Returns
+    -------
+    json
+        with keys "success" or "error"
+    """
+    return hardware_handler(request.json)
 
-            if check1 == "in":
-                used1 = result.get("used1") - int(set1val) 
-                cap1 = result.get("cap1") + int(set1val) 
-
-            if check2 == "out":                
-                used2 = result.get("used2") + int(set2val)   
-                cap2 = result.get("cap2") - int(set2val) 
-
-            if check2 == "in":
-                used2 = result.get("used2") - int(set2val) 
-                cap2 = result.get("cap2") + int(set2val)     
-
-            if cap1 > 100 or cap1 < 0:
-                return jsonify({"error": "Set 1 value invalid"})
-            if cap2 > 100 or cap2 < 0:
-                return jsonify({"error": "Set 2 value invalid"})
-        
-            Hardware_Info.update_one({"projectid": id}, {"$set": { "used1": int(used1), "used2": int(used2), "cap1": int(cap1), "cap2": int(cap2)}})
-            result = Hardware_Info.find_one({"projectid": id})
-            del result['_id'] 
-            return result
-            return jsonify({"success": True})
-        else:
-        #  if a project with projectID does not exist, send a feedback message
-            return jsonify({"error": "Project does not Exist"})
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
-        return jsonify({"error": "Problem with Form"})
-
-     
-
-# API to delete a project
-# Params:
-    # projectid: required string
-    # password: required string
 @app.route("/api/deleteproject", methods=["POST"])
 def deleteproject():
-    try:
-        #Get the projectID from the request (the form might only ask for password)
-        #encrypt the projectid to match encryptions in db
-        projectID = request.json["projectid"]
-        projpassword = request.json["password"]
+    """
+    API to delete a project
 
-        #Get the project
-        project = Project_Info.find_one({"projectid": projectID})
+    Parameters
+    ----------
+    projectid : string
+    password : string
 
-        if project and pbkdf2_sha256.verify(projpassword, project['password']):
-            Project_Info.delete_one({"projectid": projectID})
-            return jsonify({"success": True})
-        else:
-            if project is None:
-                # if a project with projectID does not exist, send a feedback message
-                return jsonify({"error": "Project does not Exist"})
-            return jsonify({"error": "Incorrect Password"})  
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
-        return jsonify({"error": "Problem with Form"})
+    Returns
+    -------
+    json
+        with keys "success" or "error"
+    """
+    return deleteproject_handler(request.json)
 
-# Returns the project Name, description and project id given a project id.
-# Params:
-    # projectid: required string
 @app.route("/api/projectdetails", methods=["POST"])
 def projectdetails():
-    try:
-        projectID = request.json["projectid"]
-        # Get the project from the projectid
-        project = Project_Info.find_one({"projectid": projectID})
-        # Handle case of invalid projectid
-        if project is None:
-            return jsonify({"error": "Project with this ID does not exist"})
-        # Remove password and db id from response before sending to front end.
-        project.pop('_id')
-        project.pop('password')
-        return jsonify(project)
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
-        return jsonify({"error": "Problem with Form"})
+    """
+    API to see project details
 
-# API endpoint to update a password of any kind
-# Params:
-    # currentPassword: required string
-    # newPassword: required string
-    # accountType: "project" or "user"
-    # email: required if accountType is "user"
-    # projectid: required if accountType is "project"
+    Parameters
+    ----------
+    projectid : string
+
+    Returns
+    -------
+    json
+        with keys "details" or "error"
+    """
+   return projectdetails_handler(request.json)
+
 @app.route("/api/updatepassword", methods=["POST"])
 def updatepassword():
-    try:
-        currentPassword = request.json["currentPassword"]
-        newPassword = request.json["newPassword"]
+    """
+    API to updatepassword
 
-        # This should be either "project" or "user"
-        accountType = request.json["accountType"]
+    Parameters
+    ----------
+    currentPassword : string
+    newPassword : string
+    accountType : string
+    projectid : string
+    email : string
 
-        #Handle ProjectCase
-        if accountType == "project":
-            projectID = request.json["projectid"]
-            project = Project_Info.find_one({"projectid": projectID})
-            # Verify project exists and that the current password matches
-            if project and pbkdf2_sha256.verify(currentPassword, project['password']):
-                # Update the password
-                Project_Info.update_one({ "projectid": projectID}, { "$set": { "password": pbkdf2_sha256.hash(newPassword)} })
-                return jsonify({"success": True})
-            else:
-                # If a project with entered projectid does not exist, send a feedback message
-                if project is None:
-                    return jsonify({"error": "Entered projectID is not associated with a project"})
-                return jsonify({"error": "Incorrect Password"})
+    Returns
+    -------
+    json
+        with keys "success" or "error"
+    """
+    return updatepassword_handler(request.json)
 
-        #Handle User case
-        elif accountType == "user":
-            email = request.json["email"]
-            email_hashed = (bcrypt.hashpw(str.encode(email), salt)).decode()
-            user = Account_Info.find_one({"email": email_hashed})
-            # Verify user account exists and that the current password matches
-            if user and pbkdf2_sha256.verify(currentPassword, user['password']):
-                # Update the password
-                Account_Info.update_one({ "email": email_hashed}, { "$set": { "password": pbkdf2_sha256.hash(newPassword)} })
-                return jsonify({"success": True})
-            else:
-                # If a user with entered email does not exist, send a feedback message
-                if user is None:
-                    return jsonify({"error": "Entered email is not associated with a user"})
-                return jsonify({"error": "Incorrect Password"})
-
-        else:
-            return jsonify({"error": "Invalid Account Type"})
-
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
-        return jsonify({"error": "Problem with Form"})
-
-#API to pull the list of datasets from the database
 @app.route("/api/getdatasets", methods=["GET"])
 def getdatasets():
-    try:
-        datasets = Datasets_Info.find({}, { "name": 1, "link": 1, "_id": 0, "description": 1}).limit(10)
-        # for dataset in datasets:
-        #     print(dataset, type(dataset))
-        sets = {}
-        sets["datasets"] = datasets
-        return json.dumps(sets)
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
-        return jsonify({"error": "Problem with Form"})
+    """
+    API to getDatasets
+
+    Returns
+    -------
+    json
+        with keys "datasets" or "error"
+    """
+    return getdatasets_handler()
 
 if __name__ == "__main__":
     app.run(debug=True) # debug=True restarts the server everytime we make a change in our code
