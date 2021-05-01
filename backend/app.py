@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 # cors is used to relax security, only for development
 from flask_cors import CORS
 # use bcrypt to hash the email such that the same string hash the same hash
@@ -138,7 +138,7 @@ def projectdetails():
     json
         with keys "details" or "error"
     """
-   return projectdetails_handler(request.json)
+    return projectdetails_handler(request.json)
 
 @app.route("/api/updatepassword", methods=["POST"])
 def updatepassword():
