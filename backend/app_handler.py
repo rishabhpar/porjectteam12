@@ -173,10 +173,7 @@ def hardware_handler(request_data):
                 return {"error": "Set 2 value invalid"}
         
             Hardware_Info.update_one({"projectid": id}, {"$set": { "used1": int(used1), "used2": int(used2), "cap1": int(cap1), "cap2": int(cap2)}})
-            result = Hardware_Info.find_one({"projectid": id})
-            del result['_id'] 
-            return result
-            return {"success": True}
+            return {"projectid": id, "used1": int(used1), "used2": int(used2), "cap1": int(cap1), "cap2": int(cap2)}
         else:
         #  if a project with projectID does not exist, send a feedback message
             return {"error": "Project does not Exist"}
