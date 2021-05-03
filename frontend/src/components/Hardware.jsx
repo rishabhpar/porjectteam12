@@ -18,7 +18,7 @@ class Hardware extends Component{
         }
 
     componentDidMount() {
-         axios.post(config.url.API_URL.concat("/api/hardware"), {
+         axios.post("https://hardwareresources12.herokuapp.com/api/hardware", {
             // get the form data on submission and post to the server
             set1: document.getElementById("set1").value,
             set2: document.getElementById("set2").value,

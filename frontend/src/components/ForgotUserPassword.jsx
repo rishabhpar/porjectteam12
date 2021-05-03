@@ -17,7 +17,7 @@ class UpdateUserPassword extends Component {
     updatePassword = (e) => {
         e.preventDefault();
         axios
-            .post(config.url.API_URL.concat("/api/updatepassword"), {
+            .post("https://hardwareresources12.herokuapp.com/api/updatepassword", {
                 // get the form data on submission and post to the server
                 email: document.getElementById("email").value,
                 currentPassword: document.getElementById("current_password").value,

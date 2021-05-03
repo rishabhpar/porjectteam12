@@ -17,7 +17,7 @@ class Register extends Component {
     register = (e) => {
         e.preventDefault();
         axios
-            .post(config.url.API_URL.concat("/api/register"), {
+            .post("https://hardwareresources12.herokuapp.com/api/register", {
                 // get the form data on submission and post to the server
                 email: document.getElementById("email").value,
                 name: document.getElementById("name").value,
