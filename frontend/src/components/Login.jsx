@@ -17,7 +17,7 @@ class Login extends Component {
     login = (e) => {
         e.preventDefault();
         axios
-            .post("https://hardwareresources12.herokuapp.com/api/login", {
+            .post("https://backendteam12.herokuapp.com/api/login", {
                 // get the form data on submission and post to the server
                 email: document.getElementById("email").value,
                 password: document.getElementById("password").value,

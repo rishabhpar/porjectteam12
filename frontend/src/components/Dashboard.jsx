@@ -19,7 +19,7 @@ class Dashboard extends React.Component {
      dashboard = (e) => {
         e.preventDefault();
          axios
-             .post("https://hardwareresources12.herokuapp.com/api/dashboard", {
+             .post("https://backendteam12.herokuapp.com/api/dashboard", {
                  // get the form data on submission and post to the server
                  password: document.getElementById("searchpass").value,
                  searchid: document.getElementById("searchid").value
