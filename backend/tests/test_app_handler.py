@@ -437,3 +437,75 @@ def test_hardware_handler_in2_error(mock_find_one, mock_update_one):
     assert_equals(response["error"], "Set 2 value invalid")    
 
 ###################################################################################################################            
+#Tests for dashboard_handler
+
+#test for nonexistent ID
+@patch('app_handler.Project_Info.find_one')
+def test_dashboard_handler_bad_id(mock_find_one):
+    id_credentials = {"searchid":"0000", "password": "Testing123!"}
+    endpoint = "http://backendteam12.herokuapp.com/api/dashboard"
+    response = requests.post(endpoint, json=id_credentials)
+    assert response.json()["error"] == "Project with that ID does not exist"
+
+    
+
+#test for bad password
+@patch('app_handler.Project_Info.find_one')
+def test_dashboard_handler_bad_password(mock_find_one):
+    id_dashboard = "9999"
+    password = "Testing123!"
+    request_data = {"searchid": id_dashboard, "password": password}
+    endpoint = "http://backendteam12.herokuapp.com/api/dashboard"
+    response = requests.post(endpoint, json=request_data)
+    assert_equals(response.json()["error"],"Incorrect Password")
+
+#test for happy case
+@patch('app_handler.Project_Info.find_one')
+def test_dashboard_handler_happy_case(mock_find_one):
+    id_dashboard = "9999"
+    password = "hello"
+
+    request_data = {"searchid": id_dashboard, "password": password}
+
+    endpoint = "http://backendteam12.herokuapp.com/api/dashboard"
+    response = requests.post(endpoint, json=request_data)
+
+    assert response.json()["success"] == True
+
+###############################################################################################################
+#These are tests to test the new project handler
+@patch('app_handler.Project_Info.find_one')
+@patch('app_handler.Project_Info.insert_one')
+def test_newproject_handler_id_already_exists(mock_find_one, mock_insert_one):
+    iddash = "9999"
+    password = "Testing123!"
+    name = "Meha"
+    desc ="test"
+    request_data = {"projectid": iddash, "password": password, "projName": name, "description": desc}
+    mock_find_one.return_value =  {"projectid": iddash, "password": pbkdf2_sha256.hash(password), "projName": name, "description": desc}
+    mock_insert_one.return_value = None
+    # Call the handler
+    response = newproject_handler(request_data)
+    # If the request is sent successfully, then I expect a success = true response.
+    assert_true(response["success"])
+
+
+# happy case
+@patch('app_handler.Project_Info.find_one')
+@patch('app_handler.Project_Info.insert_one')
+def test_newproject_handler_happy_case(mock_find_one, mock_insert_one):
+    iddash = "345"
+    password = "hello"
+    name = "Test Project"
+    desc ="cool"
+    request_data = {"projectid": iddash, "password": password, "projName": name, "description": desc}
+    
+    # Configure the mock_find_one to return the project
+    mock_find_one.return_value =  {"projectid": iddash, "password": pbkdf2_sha256.hash(password), "projName": name, "description": desc}
+    mock_insert_one.return_value = None
+    # Call the handler
+    response = newproject_handler(request_data)
+    # If the request is sent successfully, then I expect a success = true response.
+    assert_true(response["success"])
+
+

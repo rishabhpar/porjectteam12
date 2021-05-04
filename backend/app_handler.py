@@ -120,7 +120,7 @@ def dashboard_handler(request_data):
         
         # check to see if project already exists; else, communicate with user that this already exists
         proj = Project_Info.find_one({"projectid": searchid})
-
+        print(proj.json())
         # if a project exists and the password entered in the form
         # matches, this is a successful project
         if proj and pbkdf2_sha256.verify(password, proj['password']):
